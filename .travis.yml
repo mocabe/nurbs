@@ -22,7 +22,7 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty
           packages:
-            - clang-5.0
+            - llvm-5.0
       env: COMPILER=clang++-5.0
 # lets go
 script:
