@@ -19,10 +19,9 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty
+            - llvm-toolchain-trusty-5.0
           packages:
-            - llvm-5.0
+            - clang-5.0
       env: COMPILER=clang++-5.0
 # lets go
 script:
