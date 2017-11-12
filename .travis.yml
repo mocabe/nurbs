@@ -8,6 +8,17 @@ language: cpp
 
 matrix:
   include:
+    # linux g++6
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env: COMPILER=g++-6
+
     # linux g++7
     - os: linux
       compiler: gcc
@@ -19,27 +30,29 @@ matrix:
             - g++-7
       env: COMPILER=g++-7
     
-    # osx g++7
+    # osx g++
     - os: osx
+      osx_image: xcode9.1
       compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-      env: COMPILER=g++-7
+      env: COMPILER=g++
 
-    # osx clang-5.0
+    # osx clang
     - os: osx
+      osx_image: xcode9.1
       compiler: clang
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-5.0
-          packages:
-            - clang-5.0
-      env: COMPILER=clang++-5.0
+      env: COMPILER=clang++
+
+    # osx g++
+    - os: osx
+      osx_image: xcode8
+      compiler: gcc
+      env: COMPILER=g++
+
+    # osx clang
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
+      env: COMPILER=clang++
 
 # lets go
 script:
