@@ -5,9 +5,12 @@ sudo: required
 language: cpp
 # new stuff is good stuff
 # test on clang and gcc
+
 matrix:
   include:
-    - compiler: gcc
+    # linux g++7
+    - os: linux
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -15,7 +18,21 @@ matrix:
           packages:
             - g++-7
       env: COMPILER=g++-7
-    - compiler: clang
+    
+    # osx g++7
+    - os: osx
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env: COMPILER=g++-7
+
+    # osx clang-5.0
+    - os: osx
+      compiler: clang
       addons:
         apt:
           sources:
@@ -23,6 +40,7 @@ matrix:
           packages:
             - clang-5.0
       env: COMPILER=clang++-5.0
+
 # lets go
 script:
   - $COMPILER --version
