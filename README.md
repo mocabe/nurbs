@@ -96,16 +96,6 @@ De Boor's Algorithmを２通り実装してます。
 スタックに確保したい場合は更に```NURBS_ENABLE_STACK_ALLOCATION```をdefineしてください。  
 この場合は非標準の関数```alloca()```を使います  
 
-各実装の特徴を並べておきます
-
-_ | Recursive(default) | NonRecursive | NonRecursive+StackAllocation
-- | ------------------ | ------------ | ----------------------------
-usage | | `#define NURBS_NON_RECURSIVE` | `#define NURBS_NON_RECURSIVE` <br> `#define NURBS_ENABLE_STACK_ALLOCATION`
-Performance | Good | OK | Good
-Uses Stack buffer | O(recursion) | X | O
-Uses Heap buffer | X | O | X
-note | | `-flto` may improve performance (GCC) | uses non-standard function `alloca` to allocate resources in stack memory.
-
 このライブラリは基底関数が全てゼロのような計算不能な場合でも一番妥当な位置を返そうとします  
 {0,0,0}とか{nan,nan,nan}みたいなのが返ってくるのはできるだけ避けているつもりです
 
