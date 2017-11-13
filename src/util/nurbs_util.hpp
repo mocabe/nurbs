@@ -18,19 +18,17 @@ std::vector<T> CreateUniformKnots(size_t numPoints, size_t degree) {
   static_assert(std::is_floating_point<T>::value,
                 "invalid type (should be floating point)");
 
-  assert (numPoints >= 1);
-  assert (degree >= 0);
-  assert (degree <= numPoints - 1);
+  if (numPoints == 0)
+    throw std::invalid_argument("numPoints==0");
+  if(degree > numPoints -1)
+    throw std::invalid_argument("degree <= numPoints -1");
 
   const auto n = degree + 1 + numPoints;
   std::vector<T> ret{};
   ret.reserve(n);
 
-  assert(n >= 2);
-
   auto itr_n = n - 2;
 
-  // ignored when n==2
   auto delta = (T)1 / (n - 1);
 
   ret.emplace_back(0);
@@ -56,9 +54,10 @@ std::vector<T> CreateClampedKnots(size_t numPoints, size_t degree) {
   static_assert(std::is_floating_point<T>::value,
                 "invalid type (should be floating point)");
 
-  assert (numPoints >= 1);
-  assert (degree >= 0);
-  assert (degree <= numPoints - 1);
+  if (numPoints == 0)
+    throw std::invalid_argument("numPoints==0");
+  if(degree > numPoints -1)
+    throw std::invalid_argument("degree <= numPoints -1");
 
   std::vector<T> ret{};
   ret.reserve(numPoints + degree + 1);

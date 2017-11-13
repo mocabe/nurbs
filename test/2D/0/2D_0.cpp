@@ -9,18 +9,6 @@
 
 using namespace nurbs;
 
-void util(){
-  {
-    auto k = CreateClampedKnots(1, 0);
-    t_assert("clamped", k.size() == 2);
-    t_assert("clamped", k[0]==0 && k[1] ==1);
-  }
-  {
-    auto k = CreateUniformKnots(1, 0);
-    t_assert("uniform", k.size() == 2);
-    t_test("uniform", k[0] == 0 && k[1] == 1);
-  }
-}
 void default_ctor(){
   NURBS<dvec2,double> nurbs{};
   t_assert("default constructor should generate 1-point, 0-degree curve",nurbs.degree()==0 && nurbs.psize()== 1);
@@ -48,7 +36,6 @@ void eval(){
 }
 int main(){
   test::test_name = "0 Degree Tests";
-  util();
   default_ctor();
   ctor();
   eval();

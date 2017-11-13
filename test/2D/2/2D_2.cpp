@@ -8,18 +8,6 @@
 #include <test/2D/config/adaptor.hpp>
 using namespace nurbs;
 
-void util(){
-  {
-    auto knots = CreateClampedKnots(6,2);
-    std::vector<double> a = {0, 0, 0, 0.25, 0.5, 0.75, 1, 1, 1};
-    t_assert("clamped", knots == a);
-  }
-  {
-    auto knots = CreateUniformKnots(6,2);
-    std::vector<double> a = {0, 1./8, 2./8, 3./8, 4./8, 5./8, 6./8, 7./8, 1};
-    t_assert("uniform", knots == a);
-  }
-}
 void evaluate_edge(){
   size_t degree =2;
   std::vector<dvec3> points = {
@@ -137,7 +125,6 @@ void evaluate_zero_weight() {
 }
 
 int main(){
-  util();
   evaluate_edge();
   evaluate_all_edge();
   evaluate_all_size();
