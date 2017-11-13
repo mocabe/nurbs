@@ -8,7 +8,7 @@ language: cpp
 
 matrix:
   include:
-    # linux g++6
+    # linux g++5
     - os: linux
       compiler: gcc
       addons:
@@ -16,8 +16,8 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-6
-      env: COMPILER=g++-6
+            - g++-5
+      env: COMPILER=g++-5
 
     # linux g++7
     - os: linux
