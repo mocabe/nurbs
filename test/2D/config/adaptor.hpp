@@ -24,8 +24,8 @@ template <> struct access<dvec3, 2> {
   static const double &get(const dvec3 &v) { return v.z; }
 };
 
-template <> struct dimension<dvec3> { static const int value = 3; };
-template <> struct dimension<dvec2> { static const int value = 2; };
+template <> struct dimension<dvec3> { static constexpr size_t value = 3; };
+template <> struct dimension<dvec2> { static constexpr size_t value = 2; };
 
 template <> struct point_traits<dvec2> {
   using point_type = dvec2;

@@ -13,7 +13,7 @@ namespace nurbs{
 
   template <int FBegin, int TBegin, class From, class To>
   struct Map_impl<FBegin, TBegin, 0, From, To> {
-    static void map(const From &from, To &to) {}
+    static void map(const From &, To &) {}
   };
 
   template <int FBegin, int TBegin, int Range, class From, class To> struct Map {

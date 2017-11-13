@@ -4,7 +4,7 @@
 C++で実装されています。  
 templateを使用して自前のベクトルライブラリに対応できます  
 
-計算アルゴリズムは、De Boor's Algorithmをを実装しています  
+計算アルゴリズムは、De Boor's Algorithmを実装しています  
 
 ## Compiler requirements
 Requires c++14 features.  
@@ -34,7 +34,7 @@ Requires c++14 features.
 
 ## Usage  
 OpenGL Mathematics(GLM) を使用した例を示します。  
-特殊化のコード全体はsample/glm_adaptor.hppに入ってます  
+特殊化のコード全体は`sample/glm_adaptor.hpp`に入ってます  
 
 #### `nurbs::access`の特殊化
 利用するベクトルクラスのアクセサです。
@@ -51,7 +51,7 @@ template <> struct access<dvec3, 0> {
 nurbs::dimensionを指定して、制御点の次元を指定してください
 
 ``` cpp
-template <> struct dimension<dvec3> { static const int value = 3; };
+template <> struct dimension<dvec3> { static constexpr size_t value = 3; };
 ```
 
 #### `nurbs::point_traits`の特殊化
@@ -126,4 +126,3 @@ De Boor's Algorithmを２通り実装してます。
 [fussyさんの記事 :これ以外にも色々アルゴリズムの解説があります](http://fussy.web.fc2.com/algo/curve3_b-spline.htm)  
 ## Licence
 MIT Licence
-
