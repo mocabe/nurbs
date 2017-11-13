@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 namespace nurbs{
   struct test{
     static int test_run;
