@@ -24,20 +24,12 @@ std::vector<T> CreateUniformKnots(size_t numPoints, size_t degree) {
     throw std::invalid_argument("degree <= numPoints -1");
 
   const auto n = degree + 1 + numPoints;
-  std::vector<T> ret{};
+  std::vector<T> ret {};
   ret.reserve(n);
 
-  auto itr_n = n - 2;
-
-  auto delta = (T)1 / (n - 1);
-
-  ret.emplace_back(0);
-  auto d = delta;
-  for (size_t i = 0; i < itr_n; ++i) {
-    ret.emplace_back(d);
-    d += delta;
+  for (size_t i = 0; i < n; ++i) {
+    ret.emplace_back((T)i / (n - 1));
   }
-  ret.emplace_back(1);
 
   return ret;
 }
@@ -59,21 +51,20 @@ std::vector<T> CreateClampedKnots(size_t numPoints, size_t degree) {
   if(degree > numPoints -1)
     throw std::invalid_argument("degree <= numPoints -1");
 
+  const auto n = degree + 1 + numPoints;
   std::vector<T> ret{};
-  ret.reserve(numPoints + degree + 1);
+  ret.reserve(n);
 
-  auto order = degree + 1;
   // number of uniform (not clamped) knots
-  auto unfrm = numPoints - order;
-  auto delta = (T)1 / (unfrm + 1);
+  const auto unfrm = n - 2 * degree;
 
-  for (size_t i = 0; i < order; ++i) ret.emplace_back(0);
-  auto d = delta;
+  for (size_t i = 0; i < degree; ++i) ret.emplace_back(0);
+
   for (size_t i = 0; i < unfrm; ++i) {
-    ret.emplace_back(d);
-    d += delta;
+    ret.emplace_back((T)i / (unfrm - 1));
   }
-  for (size_t i = 0; i < order; ++i) ret.emplace_back(1);
+
+  for (size_t i = 0; i < degree; ++i) ret.emplace_back(1);
 
   return ret;
 }
