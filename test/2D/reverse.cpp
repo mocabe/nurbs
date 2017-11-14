@@ -33,7 +33,7 @@ void basic_reverse(){
     t_assert("reverse point test", nurbs.points() == points);
 
     bool flag = true;
-    for(auto i=0;i<std::min(r1.size(),r2.size()); ++i){
+    for(size_t i=0;i<std::min(r1.size(),r2.size()); ++i){
       if(std::fabs(r1[i].x - r2[i].x) >= 1e-14)
         flag = false;
       if(std::fabs(r1[i].y - r2[i].y) >= 1e-14)

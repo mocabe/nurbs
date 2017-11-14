@@ -471,7 +471,7 @@ private:
         size_t idx = index - degree_ + i + j + 1;
         knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
         knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
-        buff[j] = buff[j] * (1 - a) + buff[j + 1] * a;
+        buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
       }
     }
     wpoint_type r = buff[0];

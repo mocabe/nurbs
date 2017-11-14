@@ -1,1 +1,1 @@
-Test(knot_insert)
+TestCalcOptions(knot_insert)
