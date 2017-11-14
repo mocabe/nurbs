@@ -80,7 +80,7 @@ knot_evaluateは実際のノットベクトルの値を使って計算します.
 基本的に`evaluate`か`evaluate_all`で大丈夫だと思います.  
 
 
-#### `NURBS::evaluate_all(knot_type t)`
+- `std::vector<wpoint_type> NURBS<T,K>::evaluate_all(knot_type)`  
 0.0~1.0の値を指定すれば、それをインターバルとして点列を計算してくれます  
 例えば、0.1を設定すれば、始点と終点を含む12個の計算結果が帰ってきます  
 負の値を設定すれば逆向きになります  
@@ -99,11 +99,19 @@ De Boor's Algorithmを２通り実装してます。
 このライブラリは基底関数が全てゼロのような計算不能な場合でも一番妥当な位置を返そうとします  
 {0,0,0}とか{nan,nan,nan}みたいなのが返ってくるのはできるだけ避けているつもりです
 
-## ユーティリティ
-`CreateUniformKnots`関数で均一なノットベクトルを生成できます.  
-`CreateClampedKnots`はクランプされたノットベクトルを生成します.  
+## ユーティリティ  
+- `CreateUniformKnots`  
+  関数で均一なノットベクトルを生成できます.  
+
+- `CreateClampedKnots`  
+  クランプされたノットベクトルを生成します.  
 
 とりあえず`CreateClampedKnots`で作れば始点と終点を通るようになります  
+
+## その他関数
+- `void nurbs::reverse(NURBS<T,K>&)`  
+  曲線を反転させます。  
+  `evaluate_all(-i)`と反転後の`evaluate_all(i)`は一致しません
 
 ## マルチスレッド
 ```NURBS_ENABLE_MULTI_THREADING```を有効にすれば簡易マルチスレッディングができます  
