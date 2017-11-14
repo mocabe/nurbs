@@ -79,7 +79,18 @@ public:
    */
   bool set_knots(const std::vector<knot_type>& knots){
     if(knots.size() != knots_.size()) return false;
-    std::copy(knots.begin(),knots.end(), knots_.begin());
+    knots_ = knots;
+    std::sort(knots_.begin(), knots_.end());
+    return true;
+  }
+
+  /**
+   * @fun
+   * @brief set new knots
+   */
+  bool set_knots(std::vector<knot_type>&& knots){
+    if(knots.size() != knots_.size()) return false;
+    knots_ = std::move(knots);
     std::sort(knots_.begin(), knots_.end());
     return true;
   }
@@ -97,9 +108,19 @@ public:
     * @fun
     * @brief set new points
     */
-  bool set_points(std::vector<wpoint_type>& points){
+  bool set_points(const std::vector<wpoint_type>& points){
     if(points.size() != points_.size()) return false;
-    std::copy(points.begin(), points.end(), points_.begin());
+    points_ = points;
+    return true;
+  }
+
+  /**
+    * @fun
+    * @brief set new points
+    */
+  bool set_points(std::vector<wpoint_type>&& points){
+    if(points.size() != points_.size()) return false;
+    points_ = std::move(points);
     return true;
   }
 
@@ -156,23 +177,25 @@ public:
 
   /**
    * @fun
-   * @brief reverse the order of points
+   * @brief Element access for points
    */
-  void reverse() {
+  wpoint_type& pget(size_t index){
+    return points_[index];
+  }
+  /**
+   * @fun
+   * @brief Element access for points
+   */
+  const wpoint_type& pget(size_t index) const{
+    return points_[index];
+  }
 
-    std::reverse(points_.begin(),points_.end());
-
-    std::vector<knot_type> new_knots(knots_.size());
-
-    new_knots[0] = knots_[0];
-
-    for (size_t i = knots_.size() - 1; 0 < i; --i) {
-      knot_type diff = knots_[i] - knots_[i - 1];
-      size_t index = knots_.size() - i;
-      new_knots[index] = new_knots[index - 1] + diff;
-    }
-
-    knots_ = std::move(new_knots);
+  /**
+   * @fun
+   * @brief Element access for knots.
+   */
+  const knot_type& kget(size_t index) const{
+    return knots_[index];
   }
 
   /**
