@@ -9,7 +9,7 @@
 using namespace nurbs;
 
 int main(){
-
+  test::test_name  = "1 degree tests";
   nurbs::test::summarize();
   return nurbs::test::test_failed;
 }

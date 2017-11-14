@@ -62,8 +62,9 @@ void clamped(){
 }
 
 int main(){
-    uniform();
-    clamped();
-    test::summarize();
-    return test::test_failed;
+  test::test_name = "util test";
+  uniform();
+  clamped();
+  test::summarize();
+  return test::test_failed;
 }

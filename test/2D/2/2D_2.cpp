@@ -125,6 +125,7 @@ void evaluate_zero_weight() {
 }
 
 int main(){
+  test::test_name = "2 Degree tests";
   evaluate_edge();
   evaluate_all_edge();
   evaluate_all_size();

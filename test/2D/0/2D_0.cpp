@@ -35,7 +35,7 @@ void eval(){
   }
 }
 int main(){
-  test::test_name = "0 Degree Tests";
+  test::test_name = "0 degree tests";
   default_ctor();
   ctor();
   eval();
