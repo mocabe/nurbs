@@ -334,6 +334,12 @@ public:
   }
 
   /**
+   * @fun 
+   * @brief insert knot
+   */
+  void knot_insert(knot_type); // knot_insert.hpp
+
+  /**
    * @fun
    * @brief init NURBS as 1 point (weight will be set to 1.), 0 degree
    */
