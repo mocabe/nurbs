@@ -109,9 +109,23 @@ De Boor's Algorithmを２通り実装してます。
 とりあえず`CreateClampedKnots`で作れば始点と終点を通るようになります  
 
 ## その他関数
+
+### メンバ関数  
+
+- `std::pair<knot_type, knot_type> NURBS<T,K>::knot_range() const`  
+  有効なノット範囲 `{knots[degree],knots[points.size()]}` を返します  
+
+- `void NURBS<T,K>::knot_insert(knot_type)`  
+  ノットを挿入します  
+  ノットベクトルと制御点の数が１ずつ増加します  
+  挿入するノットは`knot_range()`の範囲にクランプされます  
+  挿入後の曲線はほとんど変化しません
+
+### 非メンバ関数  
+
 - `void nurbs::reverse(NURBS<T,K>&)`  
-  曲線を反転させます。  
-  `evaluate_all(-i)`と反転後の`evaluate_all(i)`は一致しません
+  曲線の計算方向を反転させます  
+  `evaluate_all(-i)`と反転後の`evaluate_all(i)`は厳密には一致しません  
 
 ## マルチスレッド
 ```NURBS_ENABLE_MULTI_THREADING```を有効にすれば簡易マルチスレッディングができます  
