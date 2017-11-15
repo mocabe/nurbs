@@ -5,3 +5,4 @@ endfunction()
 
 
 Sample(basic_usage)
+Sample(modify)
