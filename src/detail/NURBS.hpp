@@ -35,6 +35,67 @@ public:
   using knot_type = typename knot_traits<K>::knot_type;
 
   /**
+   * @fun
+   * @brief init NURBS as 1 point (weight will be set to 1.), 0 degree
+   */
+  NURBS() : points_{wpoint_type()}, knots_{0, 1}, degree_{0} {
+    get<dimension_v<point_type>>(points_.front()) = 1;
+  }
+
+  /** 
+   * @fun
+   * @brief constructor
+   * @param points control points of 4D vector
+   * @param knots knot vectors
+   * @param degree degree of curve
+   */
+  NURBS(const std::vector<wpoint_type>& points, const std::vector<knot_type> &knots, size_t degree){
+    /* Argument tests */
+    if (knots.size() != points.size() + degree + 1)
+      throw std::invalid_argument("invalid knot size");
+
+    /* Member initialization */
+    points_ = points;
+    knots_ = knots;
+    degree_ = degree;
+    
+    /* Normalization */
+    std::sort(knots_.begin(), knots_.end());
+  }
+
+  /** @fun
+   * @brief copy constructor */
+  NURBS(const NURBS &nurbs)
+    : points_{nurbs.points_}, knots_{nurbs.knots_}, degree_{nurbs.degree_}{}
+
+  /** @fun
+   * @brief move constructor */
+  NURBS(NURBS &&nurbs)
+    : points_{std::move(nurbs.points_)}, knots_{std::move(nurbs.knots_)}, degree_{nurbs.degree_}{}
+
+  /** @fun
+   * @brief destructor */
+  ~NURBS(){}
+
+  /** @fun
+   * @brief copy operator */
+  NURBS &operator=(const NURBS &nurbs){
+    points_ = nurbs.points_;
+    knots_ = nurbs.knots_;
+    degree_ = nurbs.degree_;
+    return *this;
+  }
+
+  /** @fun
+   * @brief move operator */
+  NURBS &operator=(NURBS &&nurbs){
+    points_ = std::move(nurbs.points_);
+    knots_ = std::move(nurbs.knots_);
+    degree_ = nurbs.degree_;
+    return *this;
+  }
+
+  /**
   * @fun
   * @brief returns degree
   */
@@ -338,67 +399,6 @@ public:
    * @brief insert knot
    */
   NURBS& knot_insert(knot_type); // knot_insert.hpp
-
-  /**
-   * @fun
-   * @brief init NURBS as 1 point (weight will be set to 1.), 0 degree
-   */
-  NURBS() : points_{wpoint_type()}, knots_{0, 1}, degree_{0} {
-    get<dimension_v<point_type>>(points_.front()) = 1;
-  }
-
-  /** 
-   * @fun
-   * @brief constructor
-   * @param points control points of 4D vector
-   * @param knots knot vectors
-   * @param degree degree of curve
-   */
-  NURBS(const std::vector<wpoint_type>& points, const std::vector<knot_type> &knots, size_t degree){
-    /* Argument tests */
-    if (knots.size() != points.size() + degree + 1)
-      throw std::invalid_argument("invalid knot size");
-
-    /* Member initialization */
-    points_ = points;
-    knots_ = knots;
-    degree_ = degree;
-    
-    /* Normalization */
-    std::sort(knots_.begin(), knots_.end());
-  }
-
-  /** @fun
-   * @brief copy constructor */
-  NURBS(const NURBS &nurbs)
-    : points_{nurbs.points_}, knots_{nurbs.knots_}, degree_{nurbs.degree_}{}
-
-  /** @fun
-   * @brief move constructor */
-  NURBS(NURBS &&nurbs)
-    : points_{std::move(nurbs.points_)}, knots_{std::move(nurbs.knots_)}, degree_{nurbs.degree_}{}
-
-  /** @fun
-   * @brief destructor */
-  ~NURBS(){}
-
-  /** @fun
-   * @brief copy operator */
-  NURBS &operator=(const NURBS &nurbs){
-    points_ = nurbs.points_;
-    knots_ = nurbs.knots_;
-    degree_ = nurbs.degree_;
-    return *this;
-  }
-
-  /** @fun
-   * @brief move operator */
-  NURBS &operator=(NURBS &&nurbs){
-    points_ = std::move(nurbs.points_);
-    knots_ = std::move(nurbs.knots_);
-    degree_ = nurbs.degree_;
-    return *this;
-  }
 
 private:
 
