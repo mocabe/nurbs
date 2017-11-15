@@ -115,7 +115,7 @@ De Boor's Algorithmを２通り実装してます。
 - `std::pair<knot_type, knot_type> NURBS<T,K>::knot_range() const`  
   有効なノット範囲 `{knots[degree],knots[points.size()]}` を返します  
 
-- `void NURBS<T,K>::knot_insert(knot_type)`  
+- `NURBS<T,K>& NURBS<T,K>::knot_insert(knot_type)`  
   ノットを挿入します  
   ノットベクトルと制御点の数が１ずつ増加します  
   挿入するノットは`knot_range()`の範囲にクランプされます  
@@ -123,7 +123,7 @@ De Boor's Algorithmを２通り実装してます。
 
 ### 非メンバ関数  
 
-- `void nurbs::reverse(NURBS<T,K>&)`  
+- `NURBS<T,K>& nurbs::reverse(NURBS<T,K>&)`  
   曲線の計算方向を反転させます  
   `evaluate_all(-i)`と反転後の`evaluate_all(i)`は厳密には一致しません  
 

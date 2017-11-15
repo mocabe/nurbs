@@ -337,7 +337,7 @@ public:
    * @fun 
    * @brief insert knot
    */
-  void knot_insert(knot_type); // knot_insert.hpp
+  NURBS& knot_insert(knot_type); // knot_insert.hpp
 
   /**
    * @fun

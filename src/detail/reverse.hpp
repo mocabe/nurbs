@@ -10,7 +10,7 @@ namespace nurbs {
    * @brief reverse NURBS segment.
    */
   template <class T, class K>
-  void reverse(NURBS<T,K>& nurbs){
+  NURBS<T,K>& reverse(NURBS<T,K>& nurbs){
     /*
       1. Init new knot vector which has same size to current knots.
       2. Set a base knot.
@@ -29,5 +29,7 @@ namespace nurbs {
       new_knots[index] = new_knots[index - 1] + diff;
     }
     nurbs.set_knots(std::move(new_knots));
+
+    return nurbs;
   }
 }

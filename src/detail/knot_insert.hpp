@@ -4,7 +4,7 @@
 
 namespace nurbs {
   template <class T, class K>
-  void NURBS<T,K>::knot_insert(knot_type t){
+  NURBS<T,K>& NURBS<T,K>::knot_insert(knot_type t){
     /*
       1. find knot span index 'k';
          points[k-degree] to points[k] will be use
@@ -54,5 +54,7 @@ namespace nurbs {
 
     // update knot
     knots_.insert(knots_.begin() + index + 1, t);
+
+    return *this;
   }
 }
