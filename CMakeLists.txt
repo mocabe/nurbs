@@ -4,7 +4,7 @@ project(nurbs)
 
 # Disable Wextra for MSVC
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(CMAKE_CXX_FLAGS "-std=c++1z")
+    set(CMAKE_CXX_FLAGS "-std=c++latest")
 else()
     set(CMAKE_CXX_FLAGS "-std=c++1z -Wall -Wextra")
 endif()
