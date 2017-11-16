@@ -28,6 +28,8 @@ void evaluate_edge(){
   {
     t_assert("clamp", nurbs.evaluate(1) == nurbs.evaluate(2));
     t_assert("clamp", nurbs.evaluate(0) == nurbs.evaluate(-1));
+    t_assert("clamp", nurbs.evaluate({0.5, 1},0.125) == nurbs.evaluate({2,0.5},0.125));
+    t_assert("clamp", nurbs.evaluate({0.5, -1},0.125) == nurbs.evaluate({-2, 0.5},0.125));
   }
 }
 
@@ -60,6 +62,10 @@ void evaluate_all_edge(){
     t_assert("evaluate_all(1) should return {points.front(),points.back()}",
       r.front().x == points.front().x && r.front().y == points.front().y &&
       r.back().x == points.back().x && r.back().y == points.back().y);
+  }
+  {
+    t_assert("clamp", nurbs.evaluate_all(1) == nurbs.evaluate_all(2));
+    t_assert("clamp", nurbs.evaluate_all(-1) == nurbs.evaluate_all(-2));
   }
 }
 void evaluate_all_size(){

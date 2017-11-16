@@ -17,7 +17,7 @@ namespace nurbs {
             so here we simply iterate 'i' in reverse order. (from k to k-degree+1)
     */
     auto range = knot_range();
-    t = std::max(range.first, std::min(t, range.second));
+    t = std::clamp(t, range.first, range.second);
 
     size_t index;
     // find knot span

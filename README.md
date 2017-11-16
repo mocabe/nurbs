@@ -7,7 +7,7 @@ templateを使用して自前のベクトルライブラリに対応できます
 計算アルゴリズムは、De Boor's Algorithmを実装しています  
 
 ## Compiler requirements
-Requires c++14 features.  
+Requires c++17 features.  
 [compiler support list](http://en.cppreference.com/w/cpp/compiler_support)
 
 ## Code example
@@ -91,8 +91,15 @@ knot_evaluateは実際のノットベクトルの値を使って計算します.
 De Boor's Algorithmを２通り実装してます。  
 デフォルトでは再帰関数を使った実装を使うようになっています。  
 
-非再帰版は```NURBS_NON_RECURSIVE```をdefineすれば切り替わります.  
-非再帰版はデフォルトでヒープ領域に計算用配列を用意しますが、  
+`nurbs::tags` 名前空間に入っているタグを使って切り替えられます
+```cpp
+  // 非再帰関数版(スタック上にバッファを確保)
+  nurbs.evaluate_all<NonRecursive<StackArray>>(0.1); 
+```
+
+デフォルトでは`tags::Recursive`が設定さ設定されています.  
+非再帰版をデフォルトに設定する場合は```NURBS_NON_RECURSIVE```をdefineしてください.  
+非再帰版はデフォルトでヒープ領域に計算用配列を用意します  
 スタックに確保したい場合は更に```NURBS_ENABLE_STACK_ALLOCATION```をdefineしてください。  
 この場合は非標準の関数```alloca()```を使います  
 
@@ -127,10 +134,16 @@ De Boor's Algorithmを２通り実装してます。
   曲線の計算方向を反転させます  
   `evaluate_all(-i)`と反転後の`evaluate_all(i)`は厳密には一致しません  
 
-## マルチスレッド
-```NURBS_ENABLE_MULTI_THREADING```を有効にすれば簡易マルチスレッディングができます  
-スレッド数は```NURBS_THREAD_NUM```で設定できます(デフォルトは8)
+## 簡易マルチスレッディング
 あくまで簡易なのであまり良くスケールしません  
+範囲を取る`evaluate()`, `evaluate_all()`の2つめのテンプレートパラメータにタグを渡すと使えます.  
+`tags::MultiThread<N>`のパラメータ`N`はスレッド数です
+```cpp
+  // 並列に計算
+  nurbs.evaluate<Recursive,MultiThread<8>>({0,0.5}, 0.00001);
+```
+```NURBS_MULTI_THREADING```をdefineすればデフォルトでマルチスレッドが有効になります.  
+スレッド数は```NURBS_THREAD_NUM```でデフォルトに設定できます  
 
 ## TODO
 コードのクリーンアップとバグ修正  

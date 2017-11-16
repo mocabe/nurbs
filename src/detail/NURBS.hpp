@@ -6,17 +6,15 @@
 #include <algorithm>
 #include <cassert>
 #include <stdexcept>
-
-#if defined(NURBS_ENABLE_MULTI_THREADING)
-  #include <thread>
-  #ifndef NURBS_THREAD_NUM
-    #define NURBS_THREAD_NUM 4
-  #endif
-#endif
+#include <type_traits>
+#include <thread>
 
 #include "../util/setup.hpp"
 #include "point_traits.hpp"
 #include "knot_traits.hpp"
+
+#include "../util/tags.hpp"
+
 
 namespace nurbs{
 
@@ -274,8 +272,9 @@ public:
    * @param t relative param for evaluate ( 0(0%) to 1(100%) )
    * @return result as 3D vector
    */
+  template <class EvalTag = tags::default_eval_tag>
   point_type evaluate(knot_type t) const {
-    return evaluate_impl(t);
+    return evaluate_impl<EvalTag>(t);
   }
 
   /**
@@ -285,40 +284,37 @@ public:
    * @param interval of each evaluate
    * @return evaluated points
    */
+  template <class EvalTag = tags::default_eval_tag, class ThreadingTag = tags::default_threading_tag>
   std::vector<point_type> evaluate(const std::pair<knot_type, knot_type> &range,
                                    knot_type interval) const {
     knot_type tBegin = range.first;
     knot_type tEnd = range.second;
 
     // clamp range
-    //std::clamp(tBegin,0,1);
-    tBegin = std::max(0.,std::min(tBegin,1.));
-    //std::clamp(tEnd,0,1);
-    tEnd = std::max(0.,std::min(tEnd,1.));
+    tBegin = std::clamp(tBegin, 0., 1.);
+    tEnd = std::clamp(tEnd, 0., 1.);
 
     if (tBegin > tEnd) std::swap(tBegin,tEnd);
 
     // clamp interval
-    //std::clamp(interval,-1,1);
-    interval = std::max(-1.,std::min(interval,1.));
-
+    interval = std::clamp(interval, -1., 1.);
 
     // edge cases
     if (interval == 0) { 
       std::vector<point_type> ret(2);
-      ret[0] = ret[1] = evaluate(tBegin);
+      ret[0] = ret[1] = evaluate<EvalTag>(tBegin);
       return ret;
     } else 
     if (interval == 1) {
       std::vector<point_type> ret(2);
-      ret[0] = evaluate(tBegin);
-      ret[1] = evaluate(tEnd);
+      ret[0] = evaluate<EvalTag>(tBegin);
+      ret[1] = evaluate<EvalTag>(tEnd);
       return ret;
     } else 
     if (interval == -1) {
       std::vector<point_type> ret(2);
-      ret[0] = evaluate(tEnd);
-      ret[1] = evaluate(tBegin);
+      ret[0] = evaluate<EvalTag>(tEnd);
+      ret[1] = evaluate<EvalTag>(tBegin);
       return ret;
     }
 
@@ -334,51 +330,46 @@ public:
     std::vector<point_type> ret((size_t)((cEnd - cBegin) / interval) + 2);
 
     // eval begin point
-    ret.front() = evaluate(cBegin);
+    ret.front() = evaluate<EvalTag>(cBegin);
 
-
-#if defined(NURBS_ENABLE_MULTI_THREADING)
     // Simple multi threading feature with std::thread.
+    if constexpr (impl::is_mt_tag_v<T>){
 
-    std::vector<std::thread> threads{};
-    // create threads with rambda function
-    for (size_t thread_num = 0; thread_num < NURBS_THREAD_NUM;
-         ++thread_num) {
-      threads.emplace_back([&, thread_num] {
-        // buffer for evaluation
-      #if defined(NURBS_NON_RECURSIVE) && !defined(NURBS_ENABLE_STACK_ALLOCATION)
-        std::vector<wpoint_type> buff(degree_ + 1);
-      #else
-        std::vector<wpoint_type> buff(); //not used
-      #endif
-        // push back each evaluated point
-        for (size_t i = thread_num; i < ret.size();
-             i += NURBS_THREAD_NUM) {
-          ret[i] = evaluate_impl(cBegin + i * interval, buff);
-        }
-      });
-    };
+      std::vector<std::thread> threads{};
+      // create threads with rambda function
+      for (size_t thread_num = 0; thread_num < impl::max_thread_num_v<T>; ++thread_num) {
+        threads.emplace_back([&, thread_num] {
+          // buffer for evaluation
+          std::vector<wpoint_type> buff;
+          if constexpr (std::is_same_v<EvalTag, tags::NonRecursive<tags::HeapArray>>)
+            buff.resize(degree_ + 1);
 
-    // wait until all threads finish their work
-    for (auto &th : threads)
-      th.join();
+          // push back each evaluated point
+          for (size_t i = thread_num; i < ret.size(); i += impl::max_thread_num_v<T>) {
+            ret[i] = evaluate_impl<EvalTag>(cBegin + i * interval, buff);
+          }
+        });
+      };
 
-#else ////NURBS_ENABLE_MULTI_THREADING
+      // wait until all threads finish their work
+      for (auto &th : threads)
+        th.join();
 
-  #if defined(NURBS_NON_RECURSIVE) && !defined(NURBS_ENABLE_STACK_ALLOCATION)
-    std::vector<wpoint_type> buff(degree_ + 1);
-  #else
-    std::vector<wpoint_type> buff; // not used
-  #endif
+    } else if constexpr (std::is_same_v<ThreadingTag, tags::SingleThread>) {
+      std::vector<wpoint_type> buff;
+      if constexpr (std::is_same_v<EvalTag,
+                                   tags::NonRecursive<tags::HeapArray>>)
+        buff.resize(degree_ + 1);
 
-    // push back each evaluated point
-    for (size_t i = 1; i < ret.size() - 1; ++i)
-      ret[i] = evaluate_impl(cBegin + i * interval, buff);
+      // push back each evaluated point
+      for (size_t i = 1; i < ret.size() - 1; ++i)
+        ret[i] = evaluate_impl<EvalTag>(cBegin + i * interval, buff);
 
-#endif ////NURBS_ENABLE_MULTI_THREADING
-
+    } else {
+      static_assert(!sizeof(ThreadingTag), "Invalid threading tag");
+    }
     // eval end point
-    ret.back() = evaluate(cEnd);
+    ret.back() = evaluate<EvalTag>(cEnd);
 
     return ret;
   }
@@ -390,8 +381,9 @@ public:
    * @param interval interval between each evaluation
    * @return a set of evaluated 3D vectors
    */
+  template <class EvalTag = tags::default_eval_tag, class ThreadingTag = tags::default_threading_tag>
   std::vector<point_type> evaluate_all(double interval) const{
-    return evaluate({0., 1.}, interval);
+    return evaluate<EvalTag, ThreadingTag>({0., 1.}, interval);
   }
 
   /**
@@ -400,44 +392,46 @@ public:
    */
   NURBS& knot_insert(knot_type); // knot_insert.hpp
 
-private:
+ private:
 
   /**
    * @fun
    * @brief evaluate impl
    */
+  template <class EvalTag>
   point_type evaluate_impl(knot_type t) const{
-#if defined(NURBS_NON_RECURSIVE) && !defined(NURBS_ENABLE_STACK_ALLOCATION)
-    std::vector<wpoint_type> buff(degree_ +1);
-#else
     std::vector<wpoint_type> buff;
-#endif
-    return evaluate_impl(t, buff);
+    if constexpr (std::is_same_v<EvalTag, tags::NonRecursive<tags::HeapArray>>)
+      std::vector<wpoint_type> buff(degree_ + 1);
+    return evaluate_impl<EvalTag>(t, buff);
   }
 
   /**
    * @fun
    * @brief evaluate impl
    */
+  template <class EvalTag>
   point_type evaluate_impl(knot_type t, std::vector<wpoint_type>& heap_buffer) const {
 
     // clamp
-    t = std::max(0., std::min(t, 1.));
+    t = std::clamp(t, 0., 1.);
 
     auto range = knot_range();
 
     // convert ratio to actual knot range for evaluate
     t = range.first + t * (range.second - range.first);
 
-    return knot_evaluate_DeBoor(t, heap_buffer);
+    return knot_evaluate_DeBoor<EvalTag>(t, heap_buffer);
   }
 
   /** 
    * @fun
    * @brief Calculate De Boor's Algorithm
    */
+  template <class EvalTag>
   point_type knot_evaluate_DeBoor(double t, std::vector<wpoint_type>& heap_buffer) const {
-
+    using namespace tags;
+    using namespace std;
     size_t index;
     // find knot span
     for (index = degree_; index < points_.size() - 1; ++index) {
@@ -446,62 +440,62 @@ private:
     }
     assert(points_.size() > index);
 
-#if defined(NURBS_NON_RECURSIVE) // De Boor's Algorithm - Non-recursive impl
-
-  #if  defined(NURBS_ENABLE_STACK_ALLOCATION)
-    wpoint_type *buff =
-        (wpoint_type *)alloca(sizeof(wpoint_type) * (degree_ + 1));
-    std::copy(points_.begin() + index - degree_, points_.begin() + index + 1,
-              buff);
-  #else  // NURBS_ENABLE_STACK_ALLOCATION
-    //std::vector<wpoint_type> buff(degree_ +1);
-    heap_buffer.resize(degree_ + 1);
-    auto& buff = heap_buffer;
-    std::copy(points_.begin() + index - degree_, points_.begin() + index + 1,
-              buff.begin());
-  #endif // NURBS_ENABLE_STACK_ALLOCATION
-
-    for (size_t i = 0; i < degree_ + 1; ++i) {
-      rmult<dimension_v<point_type> - 1>(buff[i],
-                                         get<dimension_v<point_type>>(buff[i]));
-    }
-
-    for (size_t i = 0; i < degree_; ++i) {
-      for (size_t j = 0; j < degree_ - i; ++j) {
-        size_t idx = index - degree_ + i + j + 1;
-        knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
-        knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
-        buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
+    // return vector
+    wpoint_type r;
+    if constexpr (is_same_v<EvalTag, NonRecursive<StackArray>> || 
+                  is_same_v<EvalTag, NonRecursive<HeapArray>>) {
+      // buffer
+      wpoint_type* buff;
+      if constexpr (is_same_v<EvalTag, NonRecursive<StackArray>>) {
+        buff = (wpoint_type *)alloca(sizeof(wpoint_type) * (degree_ + 1));
+        std::copy(points_.begin() + index - degree_,
+                  points_.begin() + index + 1, buff);
+      } else if constexpr (is_same_v<EvalTag, NonRecursive<HeapArray>>) {
+        heap_buffer.resize(degree_ + 1);
+        std::copy(points_.begin() + index - degree_,
+                  points_.begin() + index + 1, heap_buffer.begin());
+        buff = heap_buffer.data();
       }
-    }
-    wpoint_type r = buff[0];
-#else // NURBS_NON_RECURSIVE  // De Boor's Algorithm - Recursive impl
+      for (size_t i = 0; i < degree_ + 1; ++i) {
+        rmult<dimension_v<point_type> - 1>(
+            buff[i], get<dimension_v<point_type>>(buff[i]));
+      }
 
-    struct {
-      wpoint_type operator()(const NURBS<T, K> &nurbs, knot_type t, size_t i,
-                             size_t k) const {
-        if (k == 0) {
-          // convert n degree rational bspine to n+1 degree non-rational bspline
-
-          wpoint_type ret = nurbs.points_[i];
-          auto w = get<dimension_v<point_type>>(ret);
-          w = w < 0 ? 0 : w;
-          rmult<dimension_v<point_type> - 1>(ret, w);
-          return ret;
+      for (size_t i = 0; i < degree_; ++i) {
+        for (size_t j = 0; j < degree_ - i; ++j) {
+          size_t idx = index - degree_ + i + j + 1;
+          knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
+          knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
+          buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
         }
-        knot_type d = nurbs.knots_[i + nurbs.degree_ + 1 - k] - nurbs.knots_[i];
-        knot_type a = (d == 0) ? 0 : (t - nurbs.knots_[i]) / d;
-
-        return ((*this)(nurbs, t, i - 1, k - 1) * (1 - a)) +
-               ((*this)(nurbs, t, i, k - 1) * a);
       }
-    } calc;
+      r = buff[0];
+    } else if constexpr (is_same_v<EvalTag, Recursive>) {
+      struct {
+        wpoint_type operator()(const NURBS<T, K> &nurbs, knot_type t, size_t i, size_t k) const {
+          if (k == 0) {
+            // convert n degree rational bspine to n+1 degree non-rational
+            // bspline
 
-    // evaluate
-    wpoint_type r = calc(*this, t, index, degree_);
+            wpoint_type ret = nurbs.points_[i];
+            auto w = get<dimension_v<point_type>>(ret);
+            w = w < 0 ? 0 : w;
+            rmult<dimension_v<point_type> - 1>(ret, w);
+            return ret;
+          }
+          knot_type d = nurbs.knots_[i + nurbs.degree_ + 1 - k] - nurbs.knots_[i];
+          knot_type a = (d == 0) ? 0 : (t - nurbs.knots_[i]) / d;
 
-#endif // NURBS_NON_RECURSIVE
+          return ((*this)(nurbs, t, i - 1, k - 1) * (1 - a)) +
+                 ((*this)(nurbs, t, i, k - 1) * a);
+        }
+      } calc;
 
+      // evaluate
+      r = calc(*this, t, index, degree_);
+    } else {
+      static_assert(!sizeof(EvalTag), "Invalid Eval Tag");
+    }
     // Zero weight workaround: estimating possible return point
     if (get<dimension_v<point_type>>(r) == 0) {
       bool flag = false;

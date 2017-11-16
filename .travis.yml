@@ -8,17 +8,6 @@ language: cpp
 
 matrix:
   include:
-    # linux g++5
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env: COMPILER=g++-5
-
     # linux g++7
     - os: linux
       compiler: gcc
@@ -39,18 +28,6 @@ matrix:
     # osx clang
     - os: osx
       osx_image: xcode9.1
-      compiler: clang
-      env: COMPILER=clang++
-
-    # osx g++
-    - os: osx
-      osx_image: xcode8
-      compiler: gcc
-      env: COMPILER=g++
-
-    # osx clang
-    - os: osx
-      osx_image: xcode8
       compiler: clang
       env: COMPILER=clang++
 
