@@ -498,33 +498,20 @@ public:
     }
     // Zero weight workaround: estimating possible return point
     if (get<dimension_v<point_type>>(r) == 0) {
-      bool flag = false;
-
-      // P[index-degree] to P[size-1]
-      for (size_t i = index - degree_; i < points_.size(); ++i) {
-        if (get<dimension_v<point_type>>(points_[i]) == 0)
-          flag = true;
-
-        if (flag && get<dimension_v<point_type>>(points_[i]) != 0)
+      // P[index-degree+1] to P[size-1]
+      for (size_t i = index - degree_ + 1; i < points_.size(); ++i) {
+        if (get<dimension_v<point_type>>(points_[i]) != 0)
           return degenerate<point_type>(points_[i]);
       }
-      flag = false;
-      // P[index] back to P[1]
-      for (size_t i = index; 0 < i; --i) {
-        if (get<dimension_v<point_type>>(points_[i]) == 0)
-          flag = true;
-
-        if (flag && get<dimension_v<point_type>>(points_[i]) != 0)
+      // P[index] back to P[0]
+      for (size_t i = index - 1; 0 <= i; --i) {
+        if (get<dimension_v<point_type>>(points_[i]) != 0)
           return degenerate<point_type>(points_[i]);
       }
-
-      // points_[0]
-      if (flag && get<dimension_v<point_type>>(points_[0]) != 0)
-        return degenerate<point_type>(points_[0]);
-    }
-
-    if (get<dimension_v<point_type>>(r) != 0)
+      return {};
+    } else {
       rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
+    }
 
     // return as point_type
     return degenerate<point_type>(r);
