@@ -36,7 +36,7 @@ public:
    * @fun
    * @brief init NURBS as 1 point (weight will be set to 1.), 0 degree
    */
-  NURBS() : points_{wpoint_type()}, knots_{0, 1}, degree_{0} {
+  NURBS() : points_{wpoint_type() * 0}, knots_{0, 1}, degree_{0} {
     get<dimension_v<point_type>>(points_.front()) = 1;
   }
 
@@ -508,7 +508,7 @@ public:
         if (get<dimension_v<point_type>>(points_[i]) != 0)
           return degenerate<point_type>(points_[i]);
       }
-      return {};
+      return point_type() * 0;
     } else {
       rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
     }
