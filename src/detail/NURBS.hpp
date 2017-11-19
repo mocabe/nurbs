@@ -434,11 +434,16 @@ public:
     using namespace std;
     size_t index;
     // find knot span
-    for (index = degree_; index < points_.size() - 1; ++index) {
+    for (index = 0; index < knots_.size() - 2; ++index) {
       if (knots_[index] <= t && t < knots_[index + 1])
         break;
     }
-    assert(points_.size() > index);
+
+    while (knots_[index] == knots_[index + 1]) {
+      if(index == 0) break;
+      --index;
+    }
+    assert(knots_.size() > index);
 
     // return vector
     wpoint_type r;
@@ -448,25 +453,32 @@ public:
       wpoint_type* buff;
       if constexpr (is_same_v<EvalTag, NonRecursive<StackArray>>) {
         buff = (wpoint_type *)alloca(sizeof(wpoint_type) * (degree_ + 1));
-        std::copy(points_.begin() + index - degree_,
-                  points_.begin() + index + 1, buff);
       } else if constexpr (is_same_v<EvalTag, NonRecursive<HeapArray>>) {
         heap_buffer.resize(degree_ + 1);
-        std::copy(points_.begin() + index - degree_,
-                  points_.begin() + index + 1, heap_buffer.begin());
         buff = heap_buffer.data();
       }
       for (size_t i = 0; i < degree_ + 1; ++i) {
-        rmult<dimension_v<point_type> - 1>(
-            buff[i], get<dimension_v<point_type>>(buff[i]));
+        // invalid index
+        if ( (index + i )< degree_ || (index - degree_ + i) >= points_.size()) {
+          buff[i] = set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
+        } else {
+          buff[i] = points_[index - degree_ + i];
+          rmult<dimension_v<point_type> - 1>(
+              buff[i], get<dimension_v<point_type>>(buff[i]));
+        }
       }
 
       for (size_t i = 0; i < degree_; ++i) {
         for (size_t j = 0; j < degree_ - i; ++j) {
           size_t idx = index - degree_ + i + j + 1;
-          knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
-          knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
-          buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
+          // invalid index
+          if ((idx + degree_ + 1 - (i+1)) >= knots_.size()){
+            buff[j] =  set<dimension_v<point_type>>(wpoint_type{} * 0,1);
+          }else {
+            knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
+            knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
+            buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
+          }
         }
       }
       r = buff[0];
@@ -477,12 +489,21 @@ public:
             // convert n degree rational bspine to n+1 degree non-rational
             // bspline
 
+            // invalid index
+            if (i >= nurbs.points_.size())
+              return set<dimension_v<point_type>>(wpoint_type{} * 0,1);
+
             wpoint_type ret = nurbs.points_[i];
             auto w = get<dimension_v<point_type>>(ret);
             w = w < 0 ? 0 : w;
             rmult<dimension_v<point_type> - 1>(ret, w);
             return ret;
           }
+
+          // invalid index
+          if ((i + nurbs.degree_ + 1 - k) >= nurbs.knots_.size()) 
+            return set<dimension_v<point_type>>(wpoint_type{} * 0,1);
+
           knot_type d = nurbs.knots_[i + nurbs.degree_ + 1 - k] - nurbs.knots_[i];
           knot_type a = (d == 0) ? 0 : (t - nurbs.knots_[i]) / d;
 

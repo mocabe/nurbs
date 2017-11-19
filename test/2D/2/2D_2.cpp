@@ -130,12 +130,44 @@ void evaluate_zero_weight() {
   }
 }
 
+void evaluate_strange_knot(){
+    size_t degree =2;
+  std::vector<dvec3> points = {
+    {1,1,1},
+    {2,2,1},
+    {3,1,1}
+  };
+  { 
+    std::vector<double> knots(points.size() + degree + 1);
+    knots.back() = 1;
+    NURBS<dvec2, double> nurbs{points, knots, degree}; 
+    auto r = nurbs.evaluate(0);
+    t_assert("strange knot test", r == degenerate<dvec2>(points.back()));
+    r= nurbs.evaluate(0.5);
+    t_assert("strange knot test", r == degenerate<dvec2>(points.back()));
+    r= nurbs.evaluate(1);
+    t_assert("strange knot test", r == degenerate<dvec2>(points.back()));
+  }
+  { 
+    std::vector<double> knots(points.size() + degree + 1, 1.);
+    knots.front() = 0;
+    NURBS<dvec2, double> nurbs{points, knots, degree}; 
+    auto r = nurbs.evaluate(0);
+    t_assert("strange knot test", r == degenerate<dvec2>(points.front()));
+    r = nurbs.evaluate(0.5);
+    t_assert("strange knot test", r == degenerate<dvec2>(points.front()));
+    r= nurbs.evaluate(1);
+    t_assert("strange knot test", r == degenerate<dvec2>(points.front()));
+  }
+}
+
 int main(){
   test::test_name = "2 Degree tests";
   evaluate_edge();
   evaluate_all_edge();
   evaluate_all_size();
   evaluate_zero_weight();
+  evaluate_strange_knot();
   nurbs::test::summarize();
   return nurbs::test::test_failed;
 }
