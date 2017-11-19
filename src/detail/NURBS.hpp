@@ -472,9 +472,11 @@ public:
         for (size_t j = 0; j < degree_ - i; ++j) {
           size_t idx = index - degree_ + i + j + 1;
           // invalid index
-          if ((idx + degree_ + 1 - (i+1)) >= knots_.size()){
-            buff[j] =  set<dimension_v<point_type>>(wpoint_type{} * 0,1);
-          }else {
+          if (idx >= knots_.size())
+            buff[j] = set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
+          else if ((idx + degree_ + 1 - (i + 1)) >= knots_.size()) {
+            buff[j] = set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
+          } else {
             knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
             knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
             buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
@@ -486,13 +488,12 @@ public:
       struct {
         wpoint_type operator()(const NURBS<T, K> &nurbs, knot_type t, size_t i, size_t k) const {
           if (k == 0) {
-            // convert n degree rational bspine to n+1 degree non-rational
-            // bspline
-
             // invalid index
             if (i >= nurbs.points_.size())
               return set<dimension_v<point_type>>(wpoint_type{} * 0,1);
 
+            // convert n degree rational bspine to n+1 degree non-rational
+            // bspline
             wpoint_type ret = nurbs.points_[i];
             auto w = get<dimension_v<point_type>>(ret);
             w = w < 0 ? 0 : w;
@@ -501,9 +502,10 @@ public:
           }
 
           // invalid index
-          if (i + nurbs.degree_ + 1 - k >= nurbs.knots_.size()) 
-            return set<dimension_v<point_type>>(wpoint_type{} * 0,1);
-
+          if (i >= nurbs.knots_.size())
+            return set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
+          if (i + nurbs.degree_ + 1 - k >= nurbs.knots_.size())
+            return set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
           knot_type d = nurbs.knots_[i + nurbs.degree_ + 1 - k] - nurbs.knots_[i];
           knot_type a = (d == 0) ? 0 : (t - nurbs.knots_[i]) / d;
 
@@ -517,8 +519,22 @@ public:
     } else {
       static_assert(!sizeof(EvalTag), "Invalid Eval Tag");
     }
-
-    rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
+    // Zero weight workaround: estimating possible return point
+    if (get<dimension_v<point_type>>(r) == 0) {
+      size_t bot = (index + 1 < degree_) ? 0 : index + 1 - degree_;
+      // P[index-degree+1] to P[size-1]
+      for (size_t i = bot; i < points_.size(); ++i)
+        if (get<dimension_v<point_type>>(points_[i]) != 0)
+          return degenerate<point_type>(points_[i]);
+      // P[index] back to P[1]
+      for (size_t i = bot; 0 < i; --i)
+        if (get<dimension_v<point_type>>(points_[i]) != 0)
+          return degenerate<point_type>(points_[i]);
+      // P[0]
+      return degenerate<point_type>(points_[0]);
+    } else {
+      rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
+    }
     // return as point_type
     return degenerate<point_type>(r);
   }
