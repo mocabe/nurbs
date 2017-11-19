@@ -459,7 +459,7 @@ public:
       }
       for (size_t i = 0; i < degree_ + 1; ++i) {
         // invalid index
-        if ( (index + i )< degree_ || (index - degree_ + i) >= points_.size()) {
+        if ( index + i < degree_ || index - degree_ + i >= points_.size()) {
           buff[i] = set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
         } else {
           buff[i] = points_[index - degree_ + i];
@@ -501,7 +501,7 @@ public:
           }
 
           // invalid index
-          if ((i + nurbs.degree_ + 1 - k) >= nurbs.knots_.size()) 
+          if (i + nurbs.degree_ + 1 - k >= nurbs.knots_.size()) 
             return set<dimension_v<point_type>>(wpoint_type{} * 0,1);
 
           knot_type d = nurbs.knots_[i + nurbs.degree_ + 1 - k] - nurbs.knots_[i];
@@ -517,23 +517,8 @@ public:
     } else {
       static_assert(!sizeof(EvalTag), "Invalid Eval Tag");
     }
-    // Zero weight workaround: estimating possible return point
-    if (get<dimension_v<point_type>>(r) == 0) {
-      // P[index-degree+1] to P[size-1]
-      for (size_t i = index - degree_ + 1; i < points_.size(); ++i) {
-        if (get<dimension_v<point_type>>(points_[i]) != 0)
-          return degenerate<point_type>(points_[i]);
-      }
-      // P[index] back to P[0]
-      for (size_t i = index - 1; 0 <= i; --i) {
-        if (get<dimension_v<point_type>>(points_[i]) != 0)
-          return degenerate<point_type>(points_[i]);
-      }
-      return point_type() * 0;
-    } else {
-      rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
-    }
 
+    rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
     // return as point_type
     return degenerate<point_type>(r);
   }
