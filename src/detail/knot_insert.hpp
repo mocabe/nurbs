@@ -21,33 +21,48 @@ namespace nurbs {
 
     size_t index;
     // find knot span
-    for (index = degree_; index < points_.size() - 1; ++index) {
+    for (index = 0; index < knots_.size() - 2; ++index) {
       if (knots_[index] <= t && t < knots_[index + 1])
         break;
     }
+    while (knots_[index] == knots_[index + 1]) {
+      if(index == 0) break;
+      --index;
+    }
+
+    std::vector<wpoint_type> buff(degree_);
+
+    // clamp index range
+    size_t min_p_index = (index < degree_) ? 0 : index - degree_;
+    size_t max_p_index = (points_.size() <= index) ? points_.size() - 1 : index;
 
     // convert NURBS to BSpline
-    for (size_t i = index - degree_; i <= index; ++i) {
+    for (size_t i = min_p_index; i <= max_p_index; ++i) {
       rmult<dimension_v<point_type> - 1>(points_[i],
                                          get<dimension_v<point_type>>(points_[i]));
     }
 
-    // update points
-    for (size_t i = index; i >= index - degree_ + 1; --i) {
-      knot_type a = (knots_[i + degree_] != knots_[i])
-                   ? (t - knots_[i]) / (knots_[i + degree_] - knots_[i])
-                   : 0;
-      wpoint_type q = points_[i - 1] - (points_[i - 1] - points_[i]) * a;
+    size_t min_q_index = (index + 1 < degree_) ?  0 : index + 1 - degree_;
+    size_t max_q_index = (points_.size() <= index) ? points_.size() - 1 : index;
+    if (min_q_index > max_q_index) min_q_index = max_q_index;
 
-      if (i != index){
-        points_[i] = q;
-      } else {
+    // update points
+    for (size_t i = max_q_index + 1; i-- > min_q_index;) {
+
+      auto d = knots_[i + degree_] - knots_[i];
+      auto a = (d == 0) ? 0 : (t - knots_[i]) / d;
+      auto q =
+          (i == 0) ? points_[i] * a : points_[i - 1] * (1 - a) + points_[i] * a;
+
+      if(i == max_q_index){
         points_.emplace(points_.begin() + i, q);
+      } else {
+        points_[i] = q;
       }
     }
 
     // convert BSpline to NURBS
-    for (size_t i = index - degree_; i <= index + 1; ++i) {
+    for (size_t i = min_p_index; i <= max_p_index + 1 ; ++i) {
       rdiv<dimension_v<point_type> - 1>(
           points_[i], get<dimension_v<point_type>>(points_[i]));
     }
