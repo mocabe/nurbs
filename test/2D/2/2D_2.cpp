@@ -160,6 +160,17 @@ void evaluate_strange_knot(){
     t_assert("strange knot test", r == degenerate<dvec2>(points.front()));
   }
 }
+void evaluate_flat_knot(){
+  size_t degree = 2;
+  std::vector<dvec3> points = {{1, 1, 1}, {2, 2, 1}, {3, 1, 1}};
+  { 
+    std::vector<double> knots(points.size() + degree + 1, 0);
+    NURBS<dvec2, double> nurbs{points, knots, degree};
+    auto r = nurbs.evaluate_all(0.25);
+    for(auto&& p : r)
+      t_assert("flat knot test", p == degenerate<dvec2>(points[0]));
+  }
+}
 
 int main(){
   test::test_name = "2 Degree tests";
@@ -168,6 +179,7 @@ int main(){
   evaluate_all_size();
   evaluate_zero_weight();
   evaluate_strange_knot();
+  evaluate_flat_knot();
   nurbs::test::summarize();
   return nurbs::test::test_failed;
 }

@@ -460,7 +460,7 @@ public:
       for (size_t i = 0; i < degree_ + 1; ++i) {
         // invalid index
         if ( index + i < degree_ || index - degree_ + i >= points_.size()) {
-          buff[i] = set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
+          buff[i] = wpoint_type{} * 0;
         } else {
           buff[i] = points_[index - degree_ + i];
           rmult<dimension_v<point_type> - 1>(
@@ -473,7 +473,7 @@ public:
           size_t idx = index - degree_ + i + j + 1;
           // invalid index
           if ( idx >= knots_.size() || idx + degree_ + 1 - (i + 1) >= knots_.size()) {
-            buff[j] = set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
+            buff[j] = wpoint_type{} * 0;
           } else {
             knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
             knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
@@ -501,7 +501,8 @@ public:
 
           // invalid index
           if ( i >= nurbs.knots_.size() || i + nurbs.degree_ + 1 - k >= nurbs.knots_.size())
-            return set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
+            return wpoint_type{} * 0;
+
           knot_type d = nurbs.knots_[i + nurbs.degree_ + 1 - k] - nurbs.knots_[i];
           knot_type a = (d == 0) ? 0 : (t - nurbs.knots_[i]) / d;
 
