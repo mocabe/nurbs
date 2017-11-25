@@ -6,7 +6,7 @@ project(nurbs)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "/std:c++17")
 else()
-    set(CMAKE_CXX_FLAGS "-std=c++1z -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "-pthread -std=c++1z -Wall -Wextra")
 endif()
 
 include_directories("${PROJECT_SOURCE_DIR}")
