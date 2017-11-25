@@ -291,13 +291,13 @@ public:
     knot_type tEnd = range.second;
 
     // clamp range
-    tBegin = std::clamp(tBegin, 0., 1.);
-    tEnd = std::clamp(tEnd, 0., 1.);
+    tBegin = std::clamp(tBegin, knot_type(0), knot_type(1));
+    tEnd = std::clamp(tEnd, knot_type(0), knot_type(1));
 
     if (tBegin > tEnd) std::swap(tBegin,tEnd);
 
     // clamp interval
-    interval = std::clamp(interval, -1., 1.);
+    interval = std::clamp(interval, knot_type(-1), knot_type(1));
 
     // edge cases
     if (interval == 0) { 
@@ -383,7 +383,7 @@ public:
    */
   template <class EvalTag = tags::default_eval_tag, class ThreadingTag = tags::default_threading_tag>
   std::vector<point_type> evaluate_all(double interval) const{
-    return evaluate<EvalTag, ThreadingTag>({0., 1.}, interval);
+    return evaluate<EvalTag, ThreadingTag>({knot_type(0), knot_type(1)}, interval);
   }
 
   /**
@@ -414,7 +414,7 @@ public:
   point_type evaluate_impl(knot_type t, std::vector<wpoint_type>& heap_buffer) const {
 
     // clamp
-    t = std::clamp(t, 0., 1.);
+    t = std::clamp(t, knot_type(0), knot_type(1));
 
     auto range = knot_range();
 
