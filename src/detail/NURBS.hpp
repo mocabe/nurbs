@@ -1,13 +1,11 @@
 #pragma once
 
 #include <vector>
-#include <memory>
 #include <utility>
 #include <algorithm>
 #include <cassert>
 #include <stdexcept>
 #include <type_traits>
-#include <thread>
 
 #include "../util/setup.hpp"
 #include "point_traits.hpp"
