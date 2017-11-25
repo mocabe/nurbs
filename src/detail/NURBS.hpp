@@ -284,7 +284,7 @@ public:
    * @param interval of each evaluate
    * @return evaluated points
    */
-  template <class EvalTag = tags::default_eval_tag, class ThreadingTag = tags::default_threading_tag>
+  template <class EvalTag = tags::default_eval_tag>
   std::vector<point_type> evaluate(const std::pair<knot_type, knot_type> &range,
                                    knot_type interval) const {
     knot_type tBegin = range.first;
@@ -332,42 +332,14 @@ public:
     // eval begin point
     ret.front() = evaluate<EvalTag>(cBegin);
 
-    // Simple multi threading feature with std::thread.
-    if constexpr (impl::is_mt_tag_v<ThreadingTag>){
+    std::vector<wpoint_type> buff;
+    if constexpr (std::is_same_v<EvalTag, tags::NonRecursive<tags::HeapArray>>)
+      buff.resize(degree_ + 1);
 
-      std::vector<std::thread> threads;
-      // create threads with rambda function
-      for (size_t thread_num = 0; thread_num < impl::max_thread_num_v<ThreadingTag>; ++thread_num) {
-        threads.emplace_back([&, thread_num] {
-          // buffer for evaluation
-          std::vector<wpoint_type> buff;
-          if constexpr (std::is_same_v<EvalTag, tags::NonRecursive<tags::HeapArray>>)
-            buff.resize(degree_ + 1);
+    // push back each evaluated point
+    for (size_t i = 1; i < ret.size() - 1; ++i)
+      ret[i] = evaluate_impl<EvalTag>(cBegin + i * interval, buff);
 
-          // push back each evaluated point
-          for (size_t i = thread_num; i < ret.size(); i += impl::max_thread_num_v<ThreadingTag>) {
-            ret[i] = evaluate_impl<EvalTag>(cBegin + i * interval, buff);
-          }
-        });
-      };
-
-      // wait until all threads finish their work
-      for (auto &th : threads)
-        th.join();
-
-    } else if constexpr (std::is_same_v<ThreadingTag, tags::SingleThread>) {
-      std::vector<wpoint_type> buff;
-      if constexpr (std::is_same_v<EvalTag,
-                                   tags::NonRecursive<tags::HeapArray>>)
-        buff.resize(degree_ + 1);
-
-      // push back each evaluated point
-      for (size_t i = 1; i < ret.size() - 1; ++i)
-        ret[i] = evaluate_impl<EvalTag>(cBegin + i * interval, buff);
-
-    } else {
-      static_assert(!sizeof(ThreadingTag), "Invalid threading tag");
-    }
     // eval end point
     ret.back() = evaluate<EvalTag>(cEnd);
 
@@ -381,9 +353,9 @@ public:
    * @param interval interval between each evaluation
    * @return a set of evaluated 3D vectors
    */
-  template <class EvalTag = tags::default_eval_tag, class ThreadingTag = tags::default_threading_tag>
+  template <class EvalTag = tags::default_eval_tag>
   std::vector<point_type> evaluate_all(double interval) const{
-    return evaluate<EvalTag, ThreadingTag>({knot_type(0), knot_type(1)}, interval);
+    return evaluate<EvalTag>({knot_type(0), knot_type(1)}, interval);
   }
 
   /**

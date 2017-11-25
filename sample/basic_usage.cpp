@@ -21,7 +21,7 @@ int main(){
   nurbs::NURBS<dvec3, double> nurbs{points, knots, degree};
 
   // 曲線を100サンプル程度計算する
-  auto result = nurbs.evaluate_all<NonRecursive<>,MultiThread<4>>(0.01);
+  auto result = nurbs.evaluate_all<NonRecursive<>>(0.01);
 
   // 結果を使って何かする
 }

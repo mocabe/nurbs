@@ -134,17 +134,6 @@ De Boor's Algorithmを２通り実装してます。
   曲線の計算方向を反転させます  
   `evaluate_all(-i)`と反転後の`evaluate_all(i)`は厳密には一致しません  
 
-## 簡易マルチスレッディング
-あくまで簡易なのであまり良くスケールしません  
-範囲を取る`evaluate()`, `evaluate_all()`の2つめのテンプレートパラメータにタグを渡すと使えます.  
-`tags::MultiThread<N>`のパラメータ`N`はスレッド数です
-```cpp
-  // 並列に計算
-  nurbs.evaluate<Recursive,MultiThread<8>>({0,0.5}, 0.00001);
-```
-```NURBS_MULTI_THREADING```をdefineすればデフォルトでマルチスレッドが有効になります.  
-スレッド数は```NURBS_THREAD_NUM```でデフォルトに設定できます  
-
 ## TODO
 コードのクリーンアップとバグ修正  
 テストの追加  
