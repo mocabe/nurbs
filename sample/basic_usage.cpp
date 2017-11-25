@@ -3,6 +3,8 @@
 #include <sample/simple_vector_adaptor.hpp>
 
 using namespace smplv;
+using namespace nurbs;
+using namespace nurbs::tags;
 int main(){
   // 次数
   size_t degree = 3;
@@ -19,7 +21,7 @@ int main(){
   nurbs::NURBS<dvec3, double> nurbs{points, knots, degree};
 
   // 曲線を100サンプル程度計算する
-  auto result = nurbs.evaluate_all(0.01);
+  auto result = nurbs.evaluate_all<NonRecursive<>,MultiThread<4>>(0.01);
 
   // 結果を使って何かする
 }

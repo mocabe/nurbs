@@ -1,7 +1,6 @@
 #pragma once
 
-#include <nurbs.hpp>
-
+#include "NURBS.hpp"
 #include <utility>
 
 namespace nurbs {

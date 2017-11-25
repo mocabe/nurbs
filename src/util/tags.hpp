@@ -30,7 +30,7 @@ namespace nurbs{
     #endif
 
     template <size_t N = NURBS_THREAD_NUM>
-    struct MultiThread;
+    struct MultiThread {};
 
     #if defined(NURBS_MULTI_THREADING)
       using default_threading_tag = MultiThread<>;

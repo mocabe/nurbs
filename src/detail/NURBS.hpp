@@ -333,11 +333,11 @@ public:
     ret.front() = evaluate<EvalTag>(cBegin);
 
     // Simple multi threading feature with std::thread.
-    if constexpr (impl::is_mt_tag_v<T>){
+    if constexpr (impl::is_mt_tag_v<ThreadingTag>){
 
-      std::vector<std::thread> threads{};
+      std::vector<std::thread> threads;
       // create threads with rambda function
-      for (size_t thread_num = 0; thread_num < impl::max_thread_num_v<T>; ++thread_num) {
+      for (size_t thread_num = 0; thread_num < impl::max_thread_num_v<ThreadingTag>; ++thread_num) {
         threads.emplace_back([&, thread_num] {
           // buffer for evaluation
           std::vector<wpoint_type> buff;
@@ -345,7 +345,7 @@ public:
             buff.resize(degree_ + 1);
 
           // push back each evaluated point
-          for (size_t i = thread_num; i < ret.size(); i += impl::max_thread_num_v<T>) {
+          for (size_t i = thread_num; i < ret.size(); i += impl::max_thread_num_v<ThreadingTag>) {
             ret[i] = evaluate_impl<EvalTag>(cBegin + i * interval, buff);
           }
         });

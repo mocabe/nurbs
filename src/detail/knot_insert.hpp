@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nurbs.hpp>
+#include "NURBS.hpp"
 
 namespace nurbs {
   template <class T, class K>
