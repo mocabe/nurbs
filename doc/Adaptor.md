@@ -5,7 +5,7 @@
   struct dvec2 {
     double x, y;
   };
-  struct svec3 {
+  struct dvec3 {
     double x,y,z;
   };
 ```
