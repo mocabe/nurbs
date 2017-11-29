@@ -393,6 +393,13 @@ public:
      */
     NURBS &knot_insert(knot_type); // knot_insert.hpp
 
+    /**
+     * @fun
+     * @brief calc tangent at t
+     * @return non-normalized tangent vector
+     */
+    point_type tangent(knot_type t); // tangent.hpp
+
   private:
     /**
      * @fun

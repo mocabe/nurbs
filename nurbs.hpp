@@ -7,3 +7,5 @@
 #include "src/detail/reverse.hpp"
 // knot insert
 #include "src/detail/knot_insert.hpp"
+// tangent
+#include "src/detail/tangent.hpp"

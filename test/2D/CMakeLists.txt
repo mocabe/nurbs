@@ -3,3 +3,4 @@ add_subdirectory(1)
 add_subdirectory(2)
 
 Test(reverse)
+Test(tangent)
