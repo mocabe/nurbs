@@ -24,9 +24,16 @@ void tangent(){
     t_assert("tangent error test ", err < 1e-6);
   }
 }
+
+void zero_degree(){
+  NURBS<dvec3, double> nurbs{};
+  t_assert("tangent zero degree test",nurbs.tangent(0) == dvec2{});
+}
+
 int main(){
   test::test_name = "tangent test";
   tangent();
+  zero_degree();
   test::summarize();
   return test::test_failed;
 }

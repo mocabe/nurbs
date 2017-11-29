@@ -7,6 +7,10 @@ typename NURBS<T, K>::point_type NURBS<T, K>::tangent(knot_type t) const{
   using namespace tags;
   using namespace std;
 
+  // zero degree
+  if (degree_ == 0)
+    return point_type{} * 0;
+
   t = std::clamp(t, knot_type(0), knot_type(1));
   auto range = knot_range();
   t = range.first + t * (range.second - range.first);
