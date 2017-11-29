@@ -3,7 +3,7 @@
 #include "NURBS.hpp"
 namespace nurbs {
 template <class T, class K>
-typename NURBS<T, K>::point_type NURBS<T, K>::tangent(knot_type t) {
+typename NURBS<T, K>::point_type NURBS<T, K>::tangent(knot_type t) const{
   using namespace tags;
   using namespace std;
 

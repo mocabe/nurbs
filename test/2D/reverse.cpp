@@ -13,7 +13,7 @@ void basic_reverse(){
     auto knots = CreateClampedKnots(points.size(), degree);
     NURBS<dvec2, double> nurbs{points, knots, degree};
     auto r1 = nurbs.evaluate_all(-0.125);
-    reverse(nurbs);
+    nurbs.reverse();
     auto r2 = nurbs.evaluate_all(0.125);
     std::reverse(points.begin(), points.end());
     t_assert("reverse point test", nurbs.points() == points);
@@ -26,7 +26,7 @@ void basic_reverse(){
     auto knots = CreateUniformKnots(points.size(), degree);
     NURBS<dvec2, double> nurbs{points, knots, degree};
     auto r1 = nurbs.evaluate_all(-0.125);
-    reverse(nurbs);
+    nurbs.reverse();
     auto r2 = nurbs.evaluate_all(0.125);
     std::reverse(points.begin(), points.end());
 

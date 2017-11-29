@@ -9,13 +9,15 @@ namespace nurbs {
    * @brief reverse NURBS segment.
    */
   template <class T, class K>
-  NURBS<T,K>& reverse(NURBS<T,K>& nurbs){
+  NURBS<T,K>& NURBS<T,K>::reverse(){
     /*
       1. Init new knot vector which has same size to current knots.
       2. Set a base knot.
       3. diff(i) = knots[i] - knots[i-1]
       4. new_knots[j+1] = new_knots[j] + diff(j)
     */
+    auto& nurbs = *this;
+
     std::reverse(nurbs.pbegin(), nurbs.pend());
     std::vector<typename NURBS<T,K>::knot_type> new_knots(nurbs.ksize());
 

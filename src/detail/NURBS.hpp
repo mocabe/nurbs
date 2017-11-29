@@ -389,6 +389,12 @@ public:
 
     /**
      * @fun
+     * @brief reverse curve
+     */
+    NURBS& reverse(); // reverse.hpp 
+
+    /**
+     * @fun
      * @brief insert knot
      */
     NURBS &knot_insert(knot_type); // knot_insert.hpp
@@ -398,7 +404,7 @@ public:
      * @brief calc tangent at t
      * @return non-normalized tangent vector
      */
-    point_type tangent(knot_type t); // tangent.hpp
+    point_type tangent(knot_type t) const; // tangent.hpp
 
   private:
     /**
