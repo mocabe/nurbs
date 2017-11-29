@@ -24,7 +24,7 @@ Requires c++17 features.
   auto knots =  nurbs::CreateClampedKnots<double>(points.size(),degree);
 
   // NURBSクラスの初期化
-  nurbs::NURBS<dvec3, double> nurbs{points, knots, degree};
+  nurbs::NURBS<dvec4, double> nurbs{points, knots, degree};
 
   // 曲線を100サンプル程度計算する
   auto result = nurbs.evaluate_all(0.01);
