@@ -9,7 +9,7 @@
     double x,y,z;
   };
 ```
-特殊化のコード全体は[`sample/simple_vector_adaptor.hpp`](sample/simple_vector_adaptor.hpp)あたりを見てください  
+特殊化のコード全体は[`sample/simple_vector_adaptor.hpp`](../sample/simple_vector_adaptor.hpp)あたりを見てください  
 
 #### `nurbs::access`の特殊化
 利用するベクトルクラスのアクセサです。  
