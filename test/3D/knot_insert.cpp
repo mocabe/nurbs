@@ -13,7 +13,7 @@ void ex1(){
                                      {1, 2, 1, 1}, {0, 12, 0, 1}};
   const auto knots = CreateClampedKnots(points.size(), degree);
   { // t = 0.5
-    auto nurbs = NURBS<dvec3, double>(points, knots, degree);
+    auto nurbs = NURBS<dvec4, double>(points, knots, degree);
     auto r1 = nurbs.evaluate_all(0.125);
     nurbs.knot_insert(0.5);
     std::vector<double> a = {0, 0, 0, 0, 1./5, 2./5, 0.5, 3./5, 4./5, 1, 1, 1, 1};
@@ -32,7 +32,7 @@ void ex1(){
     t_assert("insert result error test", error.x < tolerance && error.y < tolerance && error.z < tolerance);
   }
   { // t = 0
-    auto nurbs = NURBS<dvec3, double>(points, knots, degree);
+    auto nurbs = NURBS<dvec4, double>(points, knots, degree);
     auto r1 = nurbs.evaluate_all(0.125);
     nurbs.knot_insert(0);
     std::vector<double> a = {0, 0, 0, 0, 0, 1./5, 2./5,3./5, 4./5, 1, 1, 1, 1};
@@ -42,7 +42,7 @@ void ex1(){
     t_assert("inserted knot test" , r1 == r2);
   }
   { // t = 1
-    auto nurbs = NURBS<dvec3, double>(points, knots, degree);
+    auto nurbs = NURBS<dvec4, double>(points, knots, degree);
     auto r1 = nurbs.evaluate_all(0.125);
     nurbs.knot_insert(1);
     std::vector<double> a = {0, 0, 0, 0, 1./5, 2./5,3./5, 4./5, 1 , 1, 1, 1, 1};
@@ -63,7 +63,7 @@ void weighted_nurbs(){
       {-40, -76, 0, 1}
     };
     auto knots = CreateClampedKnots(points.size(), degree);
-    NURBS<dvec3, double> nurbs{points, knots, degree};
+    NURBS<dvec4, double> nurbs{points, knots, degree};
     auto r1 = nurbs.evaluate_all(0.125);
     nurbs.knot_insert(0.4);
     auto r2 = nurbs.evaluate_all(0.125);
@@ -90,7 +90,7 @@ void strange_knot(){
   { 
     std::vector<double> knots(points.size() + degree + 1);
     knots.back() = 1;
-    NURBS<dvec3, double> nurbs{points, knots, degree}; 
+    NURBS<dvec4, double> nurbs{points, knots, degree}; 
     auto r1 = nurbs.evaluate_all(0.125);
     nurbs.knot_insert(1);
     auto r2 = nurbs.evaluate_all(0.125);
@@ -99,7 +99,7 @@ void strange_knot(){
   { 
     std::vector<double> knots(points.size() + degree + 1, 1.);
     knots.front() = 0;
-    NURBS<dvec3, double> nurbs{points, knots, degree}; 
+    NURBS<dvec4, double> nurbs{points, knots, degree}; 
     auto r1 = nurbs.evaluate_all(0.125);
     nurbs.knot_insert(1);
     auto r2 = nurbs.evaluate_all(0.125);
@@ -113,7 +113,7 @@ void flat_knot(){
     std::vector<dvec4> points = {
         {1, 1, 1, 1}, {2, 2, 1, 1}, {3, 1, 1, 1}, {4, 1, 1, 1}};
     std::vector<double> knots(points.size() + degree + 1, 0);
-    NURBS<dvec3, double> nurbs{points, knots, degree};
+    NURBS<dvec4, double> nurbs{points, knots, degree};
     auto r1 = nurbs.evaluate_all(0.25);
     nurbs.knot_insert(0);
     auto r2 = nurbs.evaluate_all(0.25);

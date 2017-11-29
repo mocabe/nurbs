@@ -33,10 +33,11 @@ template <> struct dimension<dvec3> { static constexpr size_t value = 3; };
 
 #### `nurbs::point_traits`の特殊化
 point_traitsでは、ライブラリが使用するベクトルクラスを設定します。
-`point_type`と`weighted_point`を設定します
+`point_type`と`weighted_point`を設定します  
+テンプレートパラメータは重み付きベクトルにしてください
 
 ``` cpp
-template <> struct point_traits<dvec2> {
+template <> struct point_traits<dvec3> {
   using point_type = dvec2;
   using weighted_point_type = dvec3;
 };

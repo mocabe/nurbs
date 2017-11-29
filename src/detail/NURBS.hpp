@@ -558,4 +558,9 @@ public:
     size_t degree_;
 };
 
+// argument deduction guide
+#if defined(__cpp_deduction_guides)
+template <class T,class K>
+NURBS(std::vector<T>, std::vector<K>, size_t) -> NURBS<T,K>;
+#endif
 }

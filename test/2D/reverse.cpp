@@ -11,7 +11,7 @@ void basic_reverse(){
     std::vector<dvec3> points = {
         {0, 0, 1}, {1, 1, 0.5}, {2, 1, 0.5}, {3, 0, 1}};
     auto knots = CreateClampedKnots(points.size(), degree);
-    NURBS<dvec2, double> nurbs{points, knots, degree};
+    NURBS<dvec3, double> nurbs{points, knots, degree};
     auto r1 = nurbs.evaluate_all(-0.125);
     nurbs.reverse();
     auto r2 = nurbs.evaluate_all(0.125);
@@ -24,7 +24,7 @@ void basic_reverse(){
     std::vector<dvec3> points = {
         {0, 0, 1}, {1, 1, 0.5}, {2, 1, 0.5}, {3, 0, 1}};
     auto knots = CreateUniformKnots(points.size(), degree);
-    NURBS<dvec2, double> nurbs{points, knots, degree};
+    NURBS<dvec3, double> nurbs{points, knots, degree};
     auto r1 = nurbs.evaluate_all(-0.125);
     nurbs.reverse();
     auto r2 = nurbs.evaluate_all(0.125);

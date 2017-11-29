@@ -27,7 +27,7 @@ int main(){
   auto knots = CreateClampedKnots(points.size(), degree);
 
   /// NURBS
-  NURBS<dvec3, double> nurbs{points, knots, degree};
+  NURBS<dvec4, double> nurbs{points, knots, degree};
 
   // copying points and knots from NURBS class.
   auto points_copy = nurbs.points();

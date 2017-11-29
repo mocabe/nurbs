@@ -10,7 +10,7 @@ void tangent(){
     std::vector<dvec3> points = {
         {0, 0, 1}, {1, 1, 0.5}, {2, 1, 2}, {3, 0, 1}};
     auto knots = CreateClampedKnots(points.size(), degree);
-    NURBS<dvec2, double> nurbs{points, knots, degree};
+    NURBS<dvec3, double> nurbs{points, knots, degree};
     double interval = 0.0001;
     double err = 0;
     auto r = nurbs.evaluate_all(interval);

@@ -16,7 +16,7 @@ void evaluate_edge(){
     {3,1,1}
   };
   auto knots = CreateClampedKnots(points.size(),degree);
-  NURBS<dvec2,double> nurbs{points,knots,degree};
+  NURBS<dvec3,double> nurbs{points,knots,degree};
   { 
     auto r = nurbs.evaluate(0); 
     t_test("evaluate(0)",r.x==points.front().x && r.y==points.front().y);
@@ -41,7 +41,7 @@ void evaluate_all_edge(){
     {3,1,1}
   };
   auto knots = CreateClampedKnots(points.size(),degree);
-  NURBS<dvec2,double> nurbs{points,knots,degree};
+  NURBS<dvec3,double> nurbs{points,knots,degree};
   {
     auto r= nurbs.evaluate_all(-1);
     t_assert("size()==2",r.size()==2);
@@ -76,7 +76,7 @@ void evaluate_all_size(){
     {3,1,1}
   };
   auto knots = CreateClampedKnots(points.size(),degree);
-  NURBS<dvec2,double> nurbs{points,knots,degree};
+  NURBS<dvec3,double> nurbs{points,knots,degree};
   {
     auto r= nurbs.evaluate_all(0.1);
     t_assert("size", r.size() == 12);
@@ -87,7 +87,7 @@ void evaluate_zero_weight() {
   size_t degree = 2;
   std::vector<dvec3> points(3);
   auto knots = CreateClampedKnots(points.size(), degree);
-  NURBS<dvec2, double> nurbs{points, knots, degree};
+  NURBS<dvec3, double> nurbs{points, knots, degree};
   {
     std::vector<dvec3> p = {{1, 1, 0}, {2, 2, 1}, {3, 1, 0}};
     std::copy(p.begin(), p.end(), nurbs.pbegin());
@@ -140,7 +140,7 @@ void evaluate_strange_knot(){
   { 
     std::vector<double> knots(points.size() + degree + 1);
     knots.back() = 1;
-    NURBS<dvec2, double> nurbs{points, knots, degree}; 
+    NURBS<dvec3, double> nurbs{points, knots, degree}; 
     auto r = nurbs.evaluate(0);
     t_assert("strange knot test", r == degenerate<dvec2>(points.back()));
     r= nurbs.evaluate(0.5);
@@ -151,7 +151,7 @@ void evaluate_strange_knot(){
   { 
     std::vector<double> knots(points.size() + degree + 1, 1.);
     knots.front() = 0;
-    NURBS<dvec2, double> nurbs{points, knots, degree}; 
+    NURBS<dvec3, double> nurbs{points, knots, degree}; 
     auto r = nurbs.evaluate(0);
     t_assert("strange knot test", r == degenerate<dvec2>(points.front()));
     r = nurbs.evaluate(0.5);
@@ -165,7 +165,7 @@ void evaluate_flat_knot(){
   std::vector<dvec3> points = {{1, 1, 1}, {2, 2, 1}, {3, 1, 1}};
   { 
     std::vector<double> knots(points.size() + degree + 1, 0);
-    NURBS<dvec2, double> nurbs{points, knots, degree};
+    NURBS<dvec3, double> nurbs{points, knots, degree};
     auto r = nurbs.evaluate_all(0.25);
     for(auto&& p : r)
       t_assert("flat knot test", p == degenerate<dvec2>(points[0]));

@@ -27,7 +27,7 @@ template <> struct access<dvec3, 2> {
 template <> struct dimension<dvec3> { static constexpr size_t value = 3; };
 template <> struct dimension<dvec2> { static constexpr size_t value = 2; };
 
-template <> struct point_traits<dvec2> {
+template <> struct point_traits<dvec3> {
   using point_type = dvec2;
   using weighted_point_type = dvec3;
 };
