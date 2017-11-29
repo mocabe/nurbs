@@ -33,44 +33,12 @@ Requires c++17 features.
 ```
 
 ## Usage  
-OpenGL Mathematics(GLM) を使用した例を示します。  
-特殊化のコード全体は`sample/glm_adaptor.hpp`に入ってます  
 
-#### `nurbs::access`の特殊化
-利用するベクトルクラスのアクセサです。
-ライブラリはN次元ベクトルの重みはN+1次元目の要素としてアクセスします。
+### ベクトルクラスの設定
+[こちら](doc/Adaptor.md)を見てください
 
-``` cpp
-template <> struct access<dvec3, 0> {
-  static double &get(dvec3 &v) { return v[0]; }
-  static const double &get(const dvec3 &v) { return v[0]; }
-};
-```
-
-#### `nurbs::dimension`の特殊化
-nurbs::dimensionを指定して、制御点の次元を指定してください
-
-``` cpp
-template <> struct dimension<dvec3> { static constexpr size_t value = 3; };
-```
-
-#### `nurbs::point_traits`の特殊化
-point_traitsでは、ライブラリが使用するベクトルクラスを設定します。
-`point_type`と`weighted_point`を設定します
-
-``` cpp
-template <> struct point_traits<dvec3> {
-  using point_type = dvec3;
-  using weighted_point_type = dvec4;
-};
-```
-
-### その他
-演算子はなくてもアクセサから勝手に生成します。  
-
-
-### NURBSの使用
-以上の設定が終わったら、`NURBS<T,K>`が使用できます.    
+### `NURBS<T,K>`
+  
 Tがn次元ベクトルクラス、Kがノット列に使用する浮動小数点数です.  
 
 NURBSの計算には幾つか関数がありますが、  
@@ -80,7 +48,7 @@ knot_evaluateは実際のノットベクトルの値を使って計算します.
 基本的に`evaluate`か`evaluate_all`で大丈夫だと思います.  
 
 
-- `std::vector<wpoint_type> NURBS<T,K>::evaluate_all(knot_type)`  
+- `std::vector<wpoint_type> evaluate_all(knot_type)`  
 0.0~1.0の値を指定すれば、それをインターバルとして点列を計算してくれます  
 例えば、0.1を設定すれば、始点と終点を含む12個の計算結果が帰ってきます  
 負の値を設定すれば逆向きになります  
@@ -119,20 +87,21 @@ De Boor's Algorithmを２通り実装してます。
 
 ### メンバ関数  
 
-- `std::pair<knot_type, knot_type> NURBS<T,K>::knot_range() const`  
+- `std::pair<knot_type, knot_type> knot_range() const`  
   有効なノット範囲 `{knots[degree],knots[points.size()]}` を返します  
 
-- `NURBS<T,K>& NURBS<T,K>::knot_insert(knot_type)`  
+- `NURBS<T,K>& knot_insert(knot_type)`  
   ノットを挿入します  
   ノットベクトルと制御点の数が１ずつ増加します  
   挿入するノットは`knot_range()`の範囲にクランプされます  
   挿入後の曲線はほとんど変化しません
 
-### 非メンバ関数  
-
-- `NURBS<T,K>& nurbs::reverse(NURBS<T,K>&)`  
+- `NURBS<T,K>& reverse(NURBS<T,K>&)`  
   曲線の計算方向を反転させます  
   `evaluate_all(-i)`と反転後の`evaluate_all(i)`は厳密には一致しません  
+
+- `point_type tangent(knot_type) const`  
+  正規化されていない接線ベクトルを計算します。
 
 ## TODO
 コードのクリーンアップとバグ修正  
