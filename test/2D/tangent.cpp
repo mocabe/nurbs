@@ -30,10 +30,26 @@ void zero_degree(){
   t_assert("tangent zero degree test",nurbs.tangent(0) == dvec2{});
 }
 
+void pos() {
+    size_t degree = 2;
+    std::vector<dvec3> points = {
+        {0, 0, 1}, {1, 1, 0.5}, {2, 1, 2}, {3, 0, 1}};
+    auto knots = CreateClampedKnots(points.size(), degree);
+    NURBS<dvec3, double> nurbs{points, knots, degree};
+    dvec2 tan;
+    dvec2 pos;
+    tan = nurbs.tangent(0.5, &pos);
+    t_assert("tangent pos test", pos == nurbs.evaluate(0.5));
+    tan = nurbs.tangent(0, &pos);
+    t_assert("tangent pos test", pos == nurbs.evaluate(0));
+    tan = nurbs.tangent(1, &pos);
+    t_assert("tangent pos test", pos == nurbs.evaluate(1));
+}
 int main(){
   test::test_name = "tangent test";
   tangent();
   zero_degree();
+  pos();
   test::summarize();
   return test::test_failed;
 }

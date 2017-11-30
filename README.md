@@ -100,8 +100,10 @@ De Boor's Algorithmを２通り実装してます。
   曲線の計算方向を反転させます  
   `evaluate_all(-i)`と反転後の`evaluate_all(i)`は厳密には一致しません  
 
-- `point_type tangent(knot_type) const`  
-  正規化されていない接線ベクトルを計算します。
+- `point_type tangent(knot_type, point_type* =nullptr) const`  
+  正規化されていない接ベクトルを計算します。  
+  `point_type*`の引数に渡すと、接点を同時に計算します  
+  (`evaluate()`で再計算するより効率が良いです)
 
 ## TODO
 コードのクリーンアップとバグ修正  

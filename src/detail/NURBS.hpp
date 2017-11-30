@@ -404,7 +404,8 @@ public:
      * @brief calc tangent at t
      * @return non-normalized tangent vector
      */
-    point_type tangent(knot_type t) const; // tangent.hpp
+    template <class EvalTag = tags::default_eval_tag>
+    point_type tangent(knot_type, point_type* = nullptr) const; // tangent.hpp
 
   private:
     /**
@@ -439,10 +440,15 @@ public:
      * @fun
      * @brief Calculate De Boor's Algorithm
      */
-    template <class EvalTag>
-    point_type knot_evaluate_DeBoor(double t, std::vector<wpoint_type> &heap_buffer) const {
+    template <class EvalTag, bool CalcTangent = false>
+    point_type knot_evaluate_DeBoor(double t, std::vector<wpoint_type> &heap_buffer, point_type* tangent = nullptr) const {
       using namespace tags;
       using namespace std;
+
+      // silence "unused parameter" warning here.
+      // this paremeter is only used in `if constexpr(CalcTangent)` blocks.
+      (void)tangent;
+
       size_t index;
       // find knot span
       for (index = 0; index < knots_.size() - 2; ++index) {
@@ -488,12 +494,29 @@ public:
                 idx + degree_ + 1 - (i + 1) >= knots_.size()) {
               buff[j] = wpoint_type{} * 0;
             } else {
+              if constexpr(CalcTangent){
+                if(tangent && i==degree_ -1){
+                  auto d = (knots_[index + 1] - knots_[index]);
+                  // tangent
+                  *tangent = degenerate<point_type>(
+                      (d != 0)
+                          ? (buff[1] * get<dimension_v<point_type>>(buff[0]) -
+                             buff[0] * get<dimension_v<point_type>>(buff[1])) *
+                                degree_ / d
+                          : wpoint_type{} * 0);
+                }
+              }
               knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
               knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
               buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
             }
           }
         }
+        // tangent of zero degree curve is always zero
+        if constexpr (CalcTangent)
+          if (tangent && degree_ == 0)
+            *tangent = point_type{} * 0;
+
         r = buff[0];
       } else if constexpr (is_same_v<EvalTag, Recursive>) {
         struct {
@@ -527,8 +550,29 @@ public:
           }
         } calc;
 
-        // evaluate
-        r = calc(*this, t, index, degree_);
+        if constexpr (CalcTangent) {
+          if(tangent){
+            if (degree_ == 0) {
+              *tangent = point_type{} * 0;
+              r = calc(*this, t, index, degree_);
+            } else {
+              auto r1 = calc(*this, t, index, degree_ - 1);
+              auto r2 = calc(*this, t, index - 1, degree_ - 1);
+              auto d = (knots_[index + 1] - knots_[index]);
+              // tangent
+              *tangent = degenerate<point_type>(
+                  (d != 0) ? (r1 * get<dimension_v<point_type>>(r2) -
+                              r2 * get<dimension_v<point_type>>(r1)) *
+                                 degree_ / d
+                           : wpoint_type{} * 0);
+              auto a = (d != 0) ? (t - knots_[index]) / d : 0;
+              r = r2 * (1 - a) + r1 * a;
+            }
+          } else
+            r = calc(*this, t, index, degree_);
+        } else
+          r = calc(*this, t, index, degree_);
+
       } else {
         static_assert(!sizeof(EvalTag), "Invalid Eval Tag");
       }
