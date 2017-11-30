@@ -1,4 +1,5 @@
-#include <nurbs.hpp>
+#include <src/detail/tangent.hpp>
+#include <src/util/nurbs_util.hpp>
 #include "config/adaptor.hpp"
 #include "../test.hpp"
 #include <iostream>
