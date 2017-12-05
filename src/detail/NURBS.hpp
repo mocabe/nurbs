@@ -525,13 +525,12 @@ public:
             if (k == 0) {
               // invalid index
               if (i >= nurbs.points_.size())
-                return set<dimension_v<point_type>>(wpoint_type{} * 0, 1);
+                return wpoint_type{} * 0;
 
               // convert n degree rational bspine to n+1 degree non-rational
               // bspline
               wpoint_type ret = nurbs.points_[i];
               auto w = get<dimension_v<point_type>>(ret);
-              w = w < 0 ? 0 : w;
               rmult<dimension_v<point_type> - 1>(ret, w);
               return ret;
             }

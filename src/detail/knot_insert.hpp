@@ -44,23 +44,24 @@ namespace nurbs {
 
     size_t min_q_index = (index + 1 < degree_) ?  0 : index + 1 - degree_;
     size_t max_q_index = (points_.size() <= index) ? points_.size() - 1 : index;
-    if (min_q_index > max_q_index) min_q_index = max_q_index;
-
+    if (min_q_index > max_q_index)
+      max_q_index = min_q_index;
     // update points
     for (size_t i = max_q_index + 1; i-- > min_q_index;) {
 
       auto d = knots_[i + degree_] - knots_[i];
       auto a = (d == 0) ? 0 : (t - knots_[i]) / d;
-      auto q =
-          (i == 0) ? points_[i] * a : points_[i - 1] * (1 - a) + points_[i] * a;
+      auto q = (i == 0) ? points_[i]
+                        : (i == points_.size())
+                              ? points_[i - 1]
+                              : points_[i - 1] * (1 - a) + points_[i] * a;
 
-      if(i == max_q_index){
+      if (i == max_q_index) {
         points_.emplace(points_.begin() + i, q);
       } else {
         points_[i] = q;
       }
     }
-
     // convert BSpline to NURBS
     for (size_t i = min_p_index; i <= max_p_index + 1 ; ++i) {
       rdiv<dimension_v<point_type> - 1>(
