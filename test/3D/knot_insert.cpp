@@ -121,12 +121,31 @@ void flat_knot(){
     t_assert("flat knot test" ,r1 == r2);
   }
 }
+
+void zero_degree(){
+  {
+    size_t degree = 0;
+    std::vector<dvec4> points = {
+        {1, 1, 1, 1}, {2, 2, 1, 1}, {3, 1, 1, 1}, {4, 1, 1, 1}};
+    auto knots = CreateUniformKnots(points.size(), degree);
+    NURBS<dvec4, double> nurbs{points, knots, degree};
+    nurbs.knot_insert(0);
+    nurbs.knot_insert(1);
+    knots.emplace(knots.begin(), knots.front());
+    knots.emplace(knots.end(), knots.back());
+    t_assert("knot_insert zero degree test", nurbs.knots() == knots);
+    points.emplace(points.begin(), points.front());
+    points.emplace(points.end(), points.back());
+    t_assert("knot_insert zero degree test", nurbs.points() == points);
+  }
+}
 int main(){
   test::test_name = "knot insertion test";
   ex1();
   weighted_nurbs();
   strange_knot();
   flat_knot();
+  zero_degree();
   test::summarize();
   return test::test_failed;
 }
