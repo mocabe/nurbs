@@ -50,16 +50,28 @@ namespace nurbs {
     for (size_t i = max_q_index + 1; i-- > min_q_index;) {
       auto d = knots_[i + degree_] - knots_[i];
       auto a = (d == 0) ? 0 : (t - knots_[i]) / d;
-      auto q = (i == 0) ? points_[i]
-                        : (i == points_.size())
-                              ? points_[i - 1]
-                              : points_[i - 1] * (1 - a) + points_[i] * a;
-
-      if (i == max_q_index) {
-        points_.emplace(points_.begin() + i, q);
-      } else {
-        points_[i] = q;
+      wpoint_type q;
+      if (i == 0)
+        q = points_[i];
+      else if (i == points_.size())
+        q = points_[i - 1];
+      else {
+        if (get<dimension_v<point_type>>(points_[i - 1]) == 0) {
+          q = points_[i] * a;
+          if (get<dimension_v<point_type>>(q) == 0)
+            q = points_[i - 1];
+        } else if (get<dimension_v<point_type>>(points_[i]) == 0) {
+          q = points_[i - 1] * (1 - a);
+          if (get<dimension_v<point_type>>(q) == 0)
+            q = points_[i];
+        } else
+          q = points_[i - 1] * (1 - a) + points_[i] * a;
       }
+
+      if (i == max_q_index)
+        points_.emplace(points_.begin() + i, q);
+      else
+        points_[i] = q;
     }
 
     // BSpline -> NURBS
