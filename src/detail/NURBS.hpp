@@ -45,16 +45,17 @@ public:
    * @param knots knot vectors
    * @param degree degree of curve
    */
-  NURBS(const std::vector<wpoint_type>& points, const std::vector<knot_type> &knots, size_t degree){
+  template <class Ps, class Ks>
+  NURBS(Ps &&points, Ks &&knots, size_t degree){
     /* Argument tests */
     if (knots.size() != points.size() + degree + 1)
       throw std::invalid_argument("invalid knot size");
 
     /* Member initialization */
-    points_ = points;
-    knots_ = knots;
+    points_ = std::forward<Ps>(points);
+    knots_ = std::forward<Ks>(knots);
     degree_ = degree;
-    
+
     /* Normalization */
     std::sort(knots_.begin(), knots_.end());
   }
@@ -62,12 +63,12 @@ public:
   /** @fun
    * @brief copy constructor */
   NURBS(const NURBS &nurbs)
-    : points_{nurbs.points_}, knots_{nurbs.knots_}, degree_{nurbs.degree_}{}
+      : points_{nurbs.points_}, knots_{nurbs.knots_}, degree_{nurbs.degree_}{}
 
   /** @fun
    * @brief move constructor */
-  NURBS(NURBS &&nurbs)
-    : points_{std::move(nurbs.points_)}, knots_{std::move(nurbs.knots_)}, degree_{nurbs.degree_}{}
+  NURBS(NURBS &&nurbs) noexcept
+      : points_{std::move(nurbs.points_)}, knots_{std::move(nurbs.knots_)}, degree_{nurbs.degree_}{}
 
   /** @fun
    * @brief destructor */
