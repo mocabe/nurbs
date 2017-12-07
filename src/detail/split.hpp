@@ -55,12 +55,12 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const{
 
   // build ret2
   std::vector<knot_type> ret2_knots(ret1.knots_.begin() + index, ret1.knots_.end());
-  std::vector<wpoint_type> ret2_points(ret1.points_.begin() + ret1.points_.size() - (ret2_knots.size() - degree_ - 1), ret1.points_.end());
+  std::vector<wpoint_type> ret2_points(ret1.points_.begin() + (ret1.points_.size() - (ret2_knots.size() - degree_ - 1)), ret1.points_.end());
   NURBS ret2{std::move(ret2_points), std::move(ret2_knots), degree_};
 
   // shrink ret1
   ret1.knots_.erase(ret1.knots_.begin() + index + knots_exist, ret1.knots_.end());
-  ret1.points_.erase(ret1.points_.begin() + ret1.knots_.size() - degree_ - 1, ret1.points_.end());
+  ret1.points_.erase(ret1.points_.begin() + (ret1.knots_.size() - degree_ - 1), ret1.points_.end());
   ret1.points_.shrink_to_fit();
   ret1.knots_.shrink_to_fit();
 
