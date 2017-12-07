@@ -407,7 +407,26 @@ public:
     template <class EvalTag = tags::default_eval_tag>
     point_type tangent(knot_type, point_type* = nullptr) const; // tangent.hpp
 
+    /**
+     * @fun
+     * @brief split curve at t
+     */
+    std::pair<NURBS,NURBS> split(knot_type) const; // split.hpp
+
   private:
+    /**
+     * @fun
+     * @brief convert [0,1] to knot_range()
+     */
+    knot_type map_to_knot_range(knot_type t) const{
+      // clamp
+      t = std::clamp(t, knot_type(0), knot_type(1));
+      auto range = knot_range();
+      // convert ratio to actual knot range for evaluate
+      t = range.first + t * (range.second - range.first);
+      return t;
+    }
+
     /**
      * @fun
      * @brief evaluate impl
@@ -424,15 +443,7 @@ public:
      */
     template <class EvalTag>
     point_type evaluate_impl(knot_type t, std::vector<wpoint_type> & heap_buffer) const {
-
-      // clamp
-      t = std::clamp(t, knot_type(0), knot_type(1));
-
-      auto range = knot_range();
-
-      // convert ratio to actual knot range for evaluate
-      t = range.first + t * (range.second - range.first);
-
+      t = map_to_knot_range(t);
       return knot_evaluate_DeBoor<EvalTag>(t, heap_buffer);
     }
 

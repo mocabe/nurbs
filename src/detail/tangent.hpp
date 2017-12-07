@@ -8,9 +8,7 @@ typename NURBS<T, K>::point_type NURBS<T, K>::tangent(knot_type t, point_type* p
   using namespace tags;
   using namespace std;
 
-  t = std::clamp(t, knot_type(0), knot_type(1));
-  auto range = knot_range();
-  t = range.first + t * (range.second - range.first);
+  t = map_to_knot_range(t);
 
   std::vector<wpoint_type> buffer;
   point_type tan;

@@ -9,3 +9,5 @@
 #include "src/detail/knot_insert.hpp"
 // tangent
 #include "src/detail/tangent.hpp"
+// split
+#include "src/detail/split.hpp"

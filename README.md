@@ -39,14 +39,13 @@ Requires c++17 features.
 
 ### `NURBS<T,K>`
   
-Tがn次元ベクトルクラス、Kがノット列に使用する浮動小数点数です.  
+Tが重み付きベクトルクラス、Kがノット列に使用する浮動小数点型です.  
 
 NURBSの計算には幾つか関数がありますが、  
-`evaluate`, `evaluate_all`は0.0~1.0の相対値  
-knot_evaluateは実際のノットベクトルの値を使って計算します.  
+`evaluate`, `evaluate_all`は0.0~1.0の相対値を使って計算します  
 
-基本的に`evaluate`か`evaluate_all`で大丈夫だと思います.  
-
+`evaluate`は単一点用、まとめて計算する場合は`evaluate_all`を使います  
+範囲を指定したい場合は`evaluate`に範囲を渡せます.  
 
 - `std::vector<wpoint_type> evaluate_all(knot_type)`  
 0.0~1.0の値を指定すれば、それをインターバルとして点列を計算してくれます  
@@ -104,6 +103,9 @@ De Boor's Algorithmを２通り実装してます。
   正規化されていない接ベクトルを計算します。  
   `point_type*`の引数に渡すと、接点を同時に計算します  
   (`evaluate()`で再計算するより効率が良いです)
+
+- `std::pair<NURBS,NURBS> split(knot_type t) const`  
+  曲線をt∈[0,1]で分割します。分割後の曲線は元の曲線と同じ次元になります。
 
 ## TODO
 コードのクリーンアップとバグ修正  
