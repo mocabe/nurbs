@@ -493,7 +493,7 @@ public:
             buff[i] = wpoint_type{} * 0;
           } else {
             buff[i] = points_[index - degree_ + i];
-            rmult<dimension_v<point_type> - 1>(
+            nurbs::rmult<dimension_v<point_type> - 1>(
                 buff[i], get<dimension_v<point_type>>(buff[i]));
           }
         }
@@ -510,7 +510,7 @@ public:
                 if(tangent && i==degree_ -1){
                   auto d = (knots_[index + 1] - knots_[index]);
                   // tangent
-                  *tangent = degenerate<point_type>(
+                  *tangent = nurbs::degenerate<point_type>(
                       (d != 0)
                           ? (buff[1] * get<dimension_v<point_type>>(buff[0]) -
                              buff[0] * get<dimension_v<point_type>>(buff[1])) *
@@ -543,7 +543,7 @@ public:
               // bspline
               wpoint_type ret = nurbs.points_[i];
               auto w = get<dimension_v<point_type>>(ret);
-              rmult<dimension_v<point_type> - 1>(ret, w);
+              nurbs::rmult<dimension_v<point_type> - 1>(ret, w);
               return ret;
             }
 
@@ -571,7 +571,7 @@ public:
               auto r2 = calc(*this, t, index - 1, degree_ - 1);
               auto d = (knots_[index + 1] - knots_[index]);
               // tangent
-              *tangent = degenerate<point_type>(
+              *tangent = nurbs::degenerate<point_type>(
                   (d != 0) ? (r1 * get<dimension_v<point_type>>(r2) -
                               r2 * get<dimension_v<point_type>>(r1)) *
                                  degree_ / d
@@ -593,18 +593,18 @@ public:
         // P[index-degree+1] to P[size-1]
         for (size_t i = bot; i < points_.size(); ++i)
           if (get<dimension_v<point_type>>(points_[i]) != 0)
-            return degenerate<point_type>(points_[i]);
+            return nurbs::degenerate<point_type>(points_[i]);
         // P[index] back to P[1]
         for (size_t i = bot; 0 < i; --i)
           if (get<dimension_v<point_type>>(points_[i]) != 0)
-            return degenerate<point_type>(points_[i]);
+            return nurbs::degenerate<point_type>(points_[i]);
         // P[0]
-        return degenerate<point_type>(points_[0]);
+        return nurbs::degenerate<point_type>(points_[0]);
       } else {
-        rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
+        nurbs::rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
       }
       // return as point_type
-      return degenerate<point_type>(r);
+      return nurbs::degenerate<point_type>(r);
     }
 
   private:
