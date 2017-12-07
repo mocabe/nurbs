@@ -17,8 +17,8 @@
 
 ``` cpp
 template <> struct access<dvec3, 0> {
-  static constexpr auto &get(dvec3 &v) { return v[0]; }
-  static constexpr const auto &get(const dvec3 &v) { return v[0]; }
+  static constexpr auto &get(dvec3 &v) { return v.x; }
+  static constexpr const auto &get(const dvec3 &v) { return v.x; }
 };
 ```
 このようにして全部の次元にアクセサを作ります  

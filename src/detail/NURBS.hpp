@@ -452,7 +452,7 @@ public:
      * @brief Calculate De Boor's Algorithm
      */
     template <class EvalTag, bool CalcTangent = false>
-    point_type knot_evaluate_DeBoor(double t, std::vector<wpoint_type> &heap_buffer, point_type* tangent = nullptr) const {
+    point_type knot_evaluate_DeBoor(knot_type t, std::vector<wpoint_type> &heap_buffer, point_type* tangent = nullptr) const {
       using namespace tags;
       using namespace std;
 
