@@ -493,7 +493,7 @@ public:
             buff[i] = wpoint_type{} * 0;
           } else {
             buff[i] = points_[index - degree_ + i];
-            nurbs::rmult<dimension_v<point_type> - 1>(
+            ::nurbs::rmult<dimension_v<point_type>>(
                 buff[i], get<dimension_v<point_type>>(buff[i]));
           }
         }
@@ -543,7 +543,7 @@ public:
               // bspline
               wpoint_type ret = nurbs.points_[i];
               auto w = get<dimension_v<point_type>>(ret);
-              nurbs::rmult<dimension_v<point_type> - 1>(ret, w);
+              ::nurbs::rmult<dimension_v<point_type>>(ret, w);
               return ret;
             }
 
@@ -601,7 +601,7 @@ public:
         // P[0]
         return nurbs::degenerate<point_type>(points_[0]);
       } else {
-        nurbs::rdiv<dimension_v<point_type> - 1>(r, get<dimension_v<point_type>>(r));
+        nurbs::rdiv<dimension_v<point_type>>(r, get<dimension_v<point_type>>(r));
       }
       // return as point_type
       return nurbs::degenerate<point_type>(r);
