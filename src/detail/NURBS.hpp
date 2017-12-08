@@ -8,8 +8,8 @@
 #include <type_traits>
 
 #include "../util/setup.hpp"
-#include "point_traits.hpp"
-#include "knot_traits.hpp"
+#include "../util/point_traits.hpp"
+#include "../util/knot_traits.hpp"
 
 #include "../util/tags.hpp"
 
@@ -398,7 +398,7 @@ public:
      * @fun
      * @brief insert knot
      */
-    NURBS &knot_insert(knot_type); // knot_insert.hpp
+    NURBS &knot_insert(knot_type t); // knot_insert.hpp
 
     /**
      * @fun
@@ -406,13 +406,25 @@ public:
      * @return non-normalized tangent vector
      */
     template <class EvalTag = tags::default_eval_tag>
-    point_type tangent(knot_type, point_type* = nullptr) const; // tangent.hpp
+    point_type tangent(knot_type t, point_type* pos = nullptr) const; // tangent.hpp
 
     /**
      * @fun
      * @brief split curve at t
      */
-    std::pair<NURBS,NURBS> split(knot_type) const; // split.hpp
+    std::pair<NURBS,NURBS> split(knot_type t) const; // split.hpp
+
+    /**
+     * @fun
+     * @brief get intersections with a line
+     */
+    std::vector<knot_type> intersec(const point_type& origin, const point_type& direction); // intersec.hpp
+
+    /**
+     * @fun
+     * @brief get intersections with a NURBS curve
+     */
+    std::vector<knot_type> intersec(const NURBS&); // intersec.hpp
 
   private:
     /**
