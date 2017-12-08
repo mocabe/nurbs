@@ -36,7 +36,7 @@ namespace nurbs {
 
     // NURBS -> BSpline
     for (size_t i = min_p_index; i <= max_p_index; ++i)
-      nurbs::rmult<dimension_v<point_type> - 1>(
+      nurbs::rmult<dimension_v<point_type>>(
           points_[i], get<dimension_v<point_type>>(points_[i]));
 
     size_t min_q_index = (index + 1 < degree_) ?  0 : index + 1 - degree_;
@@ -77,7 +77,7 @@ namespace nurbs {
     // BSpline -> NURBS
     for (size_t i = min_p_index; i <= max_p_index + 1 ; ++i)
       if (get<dimension_v<point_type>>(points_[i]) != 0)
-        nurbs::rdiv<dimension_v<point_type> - 1>(
+        nurbs::rdiv<dimension_v<point_type>>(
             points_[i], get<dimension_v<point_type>>(points_[i]));
 
     // insert knot

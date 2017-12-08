@@ -4,7 +4,7 @@
 #include <type_traits>
 namespace nurbs{
   namespace detail {
-  template <int FBegin, int TBegin, int Range, class From, class To>
+  template <size_t FBegin, size_t TBegin, size_t Range, class From, class To>
   struct Map_impl {
     static constexpr void map(const From &from, To &to) {
       get<FBegin + Range - 1>(to) = get<TBegin + Range - 1>(from);
@@ -12,9 +12,11 @@ namespace nurbs{
     }
   };
 
-  template <int FBegin, int TBegin, class From, class To>
-  struct Map_impl<FBegin, TBegin, 0, From, To> {
-    static constexpr void map(const From &, To &) {}
+  template <size_t FBegin, size_t TBegin, class From, class To>
+  struct Map_impl<FBegin, TBegin, 1, From, To> {
+    static constexpr void map(const From &from, To &to) {
+      get<FBegin>(to) = get<TBegin>(from);
+    }
   };
 
   template <int FBegin, int TBegin, int Range, class From, class To>
