@@ -7,8 +7,8 @@ namespace impl{
 template <class V, size_t N> 
 struct dot_impl {
   static constexpr auto dot(const V &lhs, const V &rhs) {
-    return get<N - 1>(lhs) * get<N - 1>(rhs) +
-           dot_impl<V, N - 1>::dot(lhs, rhs);
+    return std::fma(get<N - 1>(lhs), get<N - 1>(rhs),
+                    dot_impl<V, N - 1>::dot(lhs, rhs));
   }
 };
 

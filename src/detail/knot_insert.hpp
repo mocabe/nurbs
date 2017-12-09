@@ -65,7 +65,7 @@ namespace nurbs {
           if (get<dimension_v<point_type>>(q) == 0)
             q = points_[i];
         } else
-          q = points_[i - 1] * (1 - a) + points_[i] * a;
+          fma_division(a, points_[i - 1], points_[i], q);
       }
 
       if (i == max_q_index)

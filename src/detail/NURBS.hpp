@@ -1,17 +1,18 @@
 #pragma once
 
+
+#include "../util/setup.hpp"
+#include "../util/point_traits.hpp"
+#include "../util/knot_traits.hpp"
+#include "../util/tags.hpp"
+
 #include <vector>
 #include <utility>
 #include <algorithm>
 #include <cassert>
 #include <stdexcept>
 #include <type_traits>
-
-#include "../util/setup.hpp"
-#include "../util/point_traits.hpp"
-#include "../util/knot_traits.hpp"
-
-#include "../util/tags.hpp"
+#include <cmath>
 
 
 namespace nurbs{
@@ -418,13 +419,13 @@ public:
      * @fun
      * @brief get intersections with a line
      */
-    std::vector<knot_type> intersec(const point_type& origin, const point_type& direction); // intersec.hpp
+    //wip std::vector<knot_type> intersec(const point_type& origin, const point_type& direction); // intersec.hpp
 
     /**
      * @fun
      * @brief get intersections with a NURBS curve
      */
-    std::vector<knot_type> intersec(const NURBS&); // intersec.hpp
+    //wip std::vector<knot_type> intersec(const NURBS&); // intersec.hpp
 
   private:
     /**
@@ -436,7 +437,7 @@ public:
       t = std::clamp(t, knot_type(0), knot_type(1));
       auto range = knot_range();
       // convert ratio to actual knot range for evaluate
-      t = range.first + t * (range.second - range.first);
+      t = std::fma(t, (range.second - range.first), range.first);
       return t;
     }
 
@@ -532,7 +533,8 @@ public:
               }
               knot_type d = knots_[idx + degree_ + 1 - (i + 1)] - knots_[idx];
               knot_type a = (d == 0) ? 0 : (t - knots_[idx]) / d;
-              buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
+              fma_division(a, buff[j], buff[j + 1], buff[j]);
+              //buff[j] = buff[j] - (buff[j] - buff[j + 1]) * a;
             }
           }
         }
@@ -568,8 +570,13 @@ public:
                 nurbs.knots_[i + nurbs.degree_ + 1 - k] - nurbs.knots_[i];
             knot_type a = (d == 0) ? 0 : (t - nurbs.knots_[i]) / d;
 
+            /*
             return ((*this)(nurbs, t, i - 1, k - 1) * (1 - a)) +
                    ((*this)(nurbs, t, i, k - 1) * a);
+            */
+            auto ret = (*this)(nurbs, t, i - 1, k - 1);
+            fma_division(a, ret, (*this)(nurbs, t, i, k - 1), ret);
+            return ret;
           }
         } calc;
 
