@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <cassert>
 #include <array>
+#include <cassert>
+#include <vector>
 
 namespace nurbs {
 
@@ -15,16 +15,17 @@ namespace nurbs {
  */
 template <typename T = double>
 std::vector<T> CreateUniformKnots(size_t numPoints, size_t degree) {
-  static_assert(std::is_floating_point<T>::value,
-                "invalid type (should be floating point)");
+  static_assert(
+    std::is_floating_point<T>::value,
+    "invalid type (should be floating point)");
 
-  if (numPoints == 0)
+  if (numPoints == 0) 
     throw std::invalid_argument("numPoints==0");
-  if(degree > numPoints -1)
+  if (degree > numPoints - 1)
     throw std::invalid_argument("degree <= numPoints -1");
 
   const auto n = degree + 1 + numPoints;
-  std::vector<T> ret {};
+  std::vector<T> ret{};
   ret.reserve(n);
 
   for (size_t i = 0; i < n; ++i) {
@@ -43,12 +44,13 @@ std::vector<T> CreateUniformKnots(size_t numPoints, size_t degree) {
  */
 template <typename T = double>
 std::vector<T> CreateClampedKnots(size_t numPoints, size_t degree) {
-  static_assert(std::is_floating_point<T>::value,
-                "invalid type (should be floating point)");
+  static_assert(
+    std::is_floating_point<T>::value,
+    "invalid type (should be floating point)");
 
-  if (numPoints == 0)
-    throw std::invalid_argument("numPoints==0");
-  if(degree > numPoints -1)
+  if (numPoints == 0) 
+  throw std::invalid_argument("numPoints==0");
+  if (degree > numPoints - 1)
     throw std::invalid_argument("degree <= numPoints -1");
 
   const auto n = degree + 1 + numPoints;
@@ -58,14 +60,16 @@ std::vector<T> CreateClampedKnots(size_t numPoints, size_t degree) {
   // number of uniform (not clamped) knots
   const auto unfrm = n - 2 * degree;
 
-  for (size_t i = 0; i < degree; ++i) ret.emplace_back(0);
+  for (size_t i = 0; i < degree; ++i)
+    ret.emplace_back(0);
 
   for (size_t i = 0; i < unfrm; ++i) {
     ret.emplace_back((T)i / (unfrm - 1));
   }
 
-  for (size_t i = 0; i < degree; ++i) ret.emplace_back(1);
+  for (size_t i = 0; i < degree; ++i)
+    ret.emplace_back(1);
 
   return ret;
 }
-}
+} // namespace nurbs

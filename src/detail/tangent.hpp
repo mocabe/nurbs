@@ -4,10 +4,8 @@
 namespace nurbs {
 template <class T, class K>
 template <class EvalTag>
-typename NURBS<T, K>::point_type NURBS<T, K>::tangent(knot_type t, point_type* pos) const{
-  using namespace tags;
-  using namespace std;
-
+typename NURBS<T, K>::point_type NURBS<T, K>::tangent(
+  knot_type t, point_type* pos) const {
   t = map_to_knot_range(t);
 
   std::vector<wpoint_type> buffer;

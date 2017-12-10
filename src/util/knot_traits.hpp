@@ -2,10 +2,11 @@
 
 #include <type_traits>
 
-namespace nurbs{
+namespace nurbs {
 template <class T>
-struct knot_traits{
+struct knot_traits {
   using knot_type = T;
-  static_assert(std::is_floating_point<T>::value,"knot_type should be floating point");
+  static_assert(
+    std::is_floating_point<T>::value, "knot_type should be floating point");
 };
-}
+} // namespace nurbs

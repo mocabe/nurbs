@@ -1,9 +1,9 @@
 #pragma once
 
-namespace nurbs{
+namespace nurbs {
 template <class T>
-struct point_traits{
+struct point_traits {
   using point_type = T;
   using weighted_point_type = typename T::weighted_point_type;
 };
-}
+} // namespace nurbs

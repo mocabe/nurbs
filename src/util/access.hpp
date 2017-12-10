@@ -1,13 +1,13 @@
 #pragma once
 
-#include <utility>
 #include <type_traits>
-namespace nurbs{
+#include <utility>
+namespace nurbs {
 
 template <class T, size_t I>
 struct access;
 
-template <size_t I, class T> 
+template <size_t I, class T>
 constexpr decltype(auto) get(T &&t) {
   return access<typename std::decay<T>::type, I>::get(std::forward<T>(t));
 }
