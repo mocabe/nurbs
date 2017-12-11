@@ -1,15 +1,15 @@
 #pragma once
 
-struct dvec2{
+struct vec2{
   double x,y;
-  bool operator==(const dvec2& v) const{
+  bool operator==(const vec2& v) const{
     return (v.x==x && v.y==y);
   }
 };
 
-struct dvec3{
+struct vec3{
   double x,y,z;
-  bool operator==(const dvec3& v) const{
+  bool operator==(const vec3& v) const{
     return (v.x==x && v.y==y && v.z==z);
   }
 };
