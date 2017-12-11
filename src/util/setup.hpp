@@ -2,6 +2,6 @@
 
 #include "dimension.hpp"
 #include "access.hpp"
+#include "vector_traits.hpp"
+// vector algo
 #include "algorithm.hpp"
-#include "fma.hpp"
-#include "geometry.hpp"
