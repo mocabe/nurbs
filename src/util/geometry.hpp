@@ -1,14 +1,23 @@
 #pragma once
 
+#include "vector_traits.hpp"
+#include "fma.hpp"
 #include <cmath>
+#include <type_traits>
 
 namespace nurbs::detail {
+
 
 template <class V, size_t N>
 struct dot_impl {
   static constexpr auto dot(const V& lhs, const V& rhs) {
-    return std::fma(
-      get<N - 1>(lhs), get<N - 1>(rhs), dot_impl<V, N - 1>::dot(lhs, rhs));
+    if constexpr (
+      has_single_type_v<V> && fast_fma_enabled<element_type_t<V,0>>)
+      return std::fma(
+        get<N - 1>(lhs), get<N - 1>(rhs), dot_impl<V, N - 1>::dot(lhs, rhs));
+    else
+      return get<N - 1>(lhs) * get<N - 1>(rhs) +
+             dot_impl<V, N - 1>::dot(lhs, rhs);
   }
 };
 

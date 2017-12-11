@@ -40,8 +40,9 @@ struct fma_division_impl {
     auto xval = get<N - 1>(x);
     // Some compilers don't support FMA as library but still able to
     // auto-generate it from normal codes.
-    if constexpr (fast_fma_enabled<FP>)
-      get<N - 1>(result) = std::fma(a, yval - xval, xval);
+    if constexpr (has_single_type_v<V> && fast_fma_enabled<FP>)
+      get<N - 1>(result) =
+        std::fma(static_cast<element_type_t<V, 0>>(a), yval - xval, xval);
     else
       get<N - 1>(result) = a * (yval - xval) + xval;
 
