@@ -30,7 +30,7 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const {
   knots_exist += insert_required;
 
   size_t index = 0;
-  for (auto &&k : knots_) {
+  for (auto &&k : ret1.knots_) {
     if (k == t) break;
     ++index;
   }
@@ -51,7 +51,6 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const {
   }
 
   // build ret2
-
   std::vector<knot_type> ret2_knots(
     ret1.knots_.begin() + index, ret1.knots_.end());
 
@@ -74,6 +73,7 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const {
   ret1.knots_.shrink_to_fit();
 
   assert(ret1.psize() + ret1.degree() + 1 == ret1.ksize());
+  assert(ret2.psize() + ret2.degree() + 1 == ret2.ksize());
 
   return {std::move(ret1), std::move(ret2)};
 }
