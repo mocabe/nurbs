@@ -16,7 +16,7 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const && {
   }
 
   // move
-  NURBS ret1 = *this;
+  NURBS ret1{std::move(*this)};
 
   size_t insert_required;
   if (knots_exist > degree_ + 1)
