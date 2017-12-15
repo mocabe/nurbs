@@ -5,7 +5,7 @@
 namespace nurbs {
 
 template <class T, class K>
-std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const {
+std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const && {
 
   t = map_to_knot_range(t);
 
@@ -15,7 +15,7 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const {
     if (k > t) break;
   }
 
-  // copy
+  // move
   NURBS ret1 = *this;
 
   size_t insert_required;
@@ -76,5 +76,11 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const {
   assert(ret2.psize() + ret2.degree() + 1 == ret2.ksize());
 
   return {std::move(ret1), std::move(ret2)};
+}
+
+template <class T, class K>
+std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const & {
+  NURBS cpy{*this};
+  return std::move(cpy).split(t);
 }
 } // namespace nurbs

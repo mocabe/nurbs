@@ -402,7 +402,12 @@ public:
    * @fun
    * @brief split curve at t
    */
-  std::pair<NURBS, NURBS> split(knot_type t) const; // split.hpp
+  std::pair<NURBS, NURBS> split(knot_type t) const&&; // split.hpp
+  /**
+   * @fun
+   * @brief split curve at t
+   */
+  std::pair<NURBS, NURBS> split(knot_type t) const&; // split.hpp
 
   /**
    * @fun
@@ -414,7 +419,7 @@ public:
     class PtTp = point_type,
     // 2D curve only
     class =
-      std::enable_if_t<std::is_same_v<PtTp, point_type> && dimension_v<> == 2>>
+      std::enable_if_t<std::is_same_v<PtTp, point_type> && dimension_v<PtTp> == 2>>
   void intersec(
     const point_type &origin,
     const point_type &direction,
