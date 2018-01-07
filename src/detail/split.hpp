@@ -18,6 +18,7 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const && {
   // move
   NURBS ret1{std::move(*this)};
 
+  assert(ret1.ksize() == ret1.psize() + ret1.degree() + 1);
   size_t insert_required;
   if (knots_exist > degree_ + 1)
     insert_required = 0;
@@ -51,8 +52,11 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const && {
   }
 
   // build ret2
+  auto last_idx = index + knots_exist - 1;
+  size_t n = std::min(last_idx - degree(),ret1.knots_.size() - 2*(degree() + 1));
+  
   std::vector<knot_type> ret2_knots(
-    ret1.knots_.begin() + index, ret1.knots_.end());
+    ret1.knots_.begin() + n, ret1.knots_.end());
 
   std::vector<wpoint_type> ret2_points(
     ret1.points_.begin() +
@@ -62,8 +66,9 @@ std::pair<NURBS<T, K>, NURBS<T, K>> NURBS<T, K>::split(knot_type t) const && {
   NURBS ret2{std::move(ret2_points), std::move(ret2_knots), degree_};
 
   // shrink ret1
+  n = std::max(last_idx + 1, 2*(degree() + 1));
   ret1.knots_.erase(
-    ret1.knots_.begin() + index + knots_exist, ret1.knots_.end());
+    ret1.knots_.begin() + n, ret1.knots_.end());
 
   ret1.points_.erase(
     ret1.points_.begin() + (ret1.knots_.size() - degree_ - 1),
