@@ -17,25 +17,31 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-7
-      env: COMPILER=g++-7
+      env: 
+        - MATRIX_EVAL="COMPILER=g++-7"
     
     # osx g++
     - os: osx
       osx_image: xcode9.1
-      compiler: gcc
-      env: COMPILER=g++
+      env: 
+        - MATRIX_EVAL="brew install gcc && COMPILER=g++7"
 
     # osx clang xcode9.1
     - os: osx
       osx_image: xcode9.1
       compiler: clang
-      env: COMPILER=clang++
+      env: 
+        - MATRIX_EVAL="COMPILER=clang++"
 
     # osx clang xcode9.2
     - os: osx
       osx_image: xcode9.2
       compiler: clang
-      env: COMPILER=clang++
+      env: 
+        - MATRIX_EVAL="COMPILER=clang++"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
 
 # lets go
 script:
