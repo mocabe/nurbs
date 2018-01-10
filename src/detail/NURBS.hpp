@@ -409,29 +409,6 @@ public:
    */
   std::pair<NURBS, NURBS> split(knot_type t) const&; // split.hpp
 
-  /**
-   * @fun
-   * @brief get intersections with a line
-   */
-  /* wip
-  template <
-    // dummy parameter
-    class PtTp = point_type,
-    // 2D curve only
-    class =
-      std::enable_if_t<std::is_same_v<PtTp, point_type> && dimension_v<PtTp> == 2>>
-  void intersec(
-    const point_type &origin,
-    const point_type &direction,
-    std::vector<knot_type> &result); // intersec.hpp
-  */
-
-  /**
-   * @fun
-   * @brief get intersections with a NURBS curve
-   */
-  // wip std::vector<knot_type> intersec(const NURBS&); // intersec.hpp
-
 private:
   /**
    * @fun
