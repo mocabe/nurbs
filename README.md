@@ -15,7 +15,7 @@ templateを使用して自前のベクトルライブラリに対応できます
 
 | Branch | Travis CI | AppVeyor |  
 |:---:|:---:|:---:|
-| feature/intersec | [![Build Status](https://travis-ci.org/mocabe/nurbs.svg?branch=feature/intersec)](https://travis-ci.org/mocabe/nurbs) | [![Build status](https://ci.appveyor.com/api/projects/status/r5slhpbsgb7mny1r/branch/feature/intersec?svg=true)](https://ci.appveyor.com/project/mocabe/nurbs) |  
+| feature/intersec | [![Build Status](https://travis-ci.org/mocabe/nurbs.svg?branch=feature%2Fintersec)](https://travis-ci.org/mocabe/nurbs) | [![Build status](https://ci.appveyor.com/api/projects/status/r5slhpbsgb7mny1r/branch/feature/intersec?svg=true)](https://ci.appveyor.com/project/mocabe/nurbs) |  
 
 
 
