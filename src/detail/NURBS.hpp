@@ -413,8 +413,7 @@ public:
    * @fun
    * @brief get intersections with a line
    */
-  /* wip
-  template <
+   template <
     // dummy parameter
     class PtTp = point_type,
     // 2D curve only
@@ -423,8 +422,7 @@ public:
   void intersec(
     const point_type &origin,
     const point_type &direction,
-    std::vector<knot_type> &result); // intersec.hpp
-  */
+    std::vector<point_type> &result); // intersec.hpp
 
   /**
    * @fun

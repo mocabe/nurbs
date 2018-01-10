@@ -11,3 +11,5 @@
 #include "src/detail/tangent.hpp"
 // split
 #include "src/detail/split.hpp"
+// intersec
+#include "src/detail/intersec.hpp"
