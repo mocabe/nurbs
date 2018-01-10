@@ -1,10 +1,23 @@
-[![Build Status](https://travis-ci.org/mocabe/nurbs.svg?branch=master)](https://travis-ci.org/mocabe/nurbs) [![Build status](https://ci.appveyor.com/api/projects/status/r5slhpbsgb7mny1r/branch/master?svg=true)](https://ci.appveyor.com/project/mocabe/nurbs)
 # nurbs
 ヘッダーオンリーのNURBSライブラリです。  
 C++で実装されています。  
 templateを使用して自前のベクトルライブラリに対応できます  
 
 計算アルゴリズムは、De Boor's Algorithmを実装しています  
+
+##### Build Status
+| Branch | Travis CI | AppVeyor |  
+|:---:|:---:|:---:|
+| master | [![Build Status](https://travis-ci.org/mocabe/nurbs.svg?branch=master)](https://travis-ci.org/mocabe/nurbs) | [![Build status](https://ci.appveyor.com/api/projects/status/r5slhpbsgb7mny1r/branch/master?svg=true)](https://ci.appveyor.com/project/mocabe/nurbs) |  
+| develop | [![Build Status](https://travis-ci.org/mocabe/nurbs.svg?branch=develop)](https://travis-ci.org/mocabe/nurbs) | [![Build status](https://ci.appveyor.com/api/projects/status/r5slhpbsgb7mny1r/branch/develop?svg=true)](https://ci.appveyor.com/project/mocabe/nurbs) |  
+
+*wip features*  
+
+| Branch | Travis CI | AppVeyor |  
+|:---:|:---:|:---:|
+| feature/intersec | [![Build Status](https://travis-ci.org/mocabe/nurbs.svg?branch=feature%2Fintersec)](https://travis-ci.org/mocabe/nurbs) | [![Build status](https://ci.appveyor.com/api/projects/status/r5slhpbsgb7mny1r/branch/feature/intersec?svg=true)](https://ci.appveyor.com/project/mocabe/nurbs) |  
+
+
 
 ## Compiler requirements
 Requires c++17 features.  
