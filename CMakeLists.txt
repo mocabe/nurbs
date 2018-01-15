@@ -4,10 +4,13 @@ project(nurbs)
 
 # Disable Wextra for MSVC
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(CMAKE_CXX_FLAGS "/std:c++17")
+    set(CXX_FLAGS "/std:c++17")
 else()
-    set(CMAKE_CXX_FLAGS "-std=c++1z -Wall -Wextra")
+    set(CXX_FLAGS "-std=c++1z -Wall -Wextra")
 endif()
+
+# merge cxx flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}")
 
 include_directories("${PROJECT_SOURCE_DIR}")
 

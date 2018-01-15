@@ -19,6 +19,7 @@ matrix:
             - g++-7
       env: 
         - MATRIX_EVAL="COMPILER=g++-7"
+        - CXX_FLAGS=""
 
     # linux clang++-5.0
     - os: linux
@@ -33,6 +34,7 @@ matrix:
             - clang-5.0
       env:
         - MATRIX_EVAL="COMPILER=clang++-5.0 && clang++-5.0 -v"
+        - CXX_FLAGS=""
     
     # osx g++
     - os: osx
@@ -40,6 +42,7 @@ matrix:
       compiler: gcc
       env: 
         - MATRIX_EVAL="brew install gcc && COMPILER=g++-7"
+        - CXX_FLAGS=""
 
     # osx clang xcode9.1
     - os: osx
@@ -47,7 +50,8 @@ matrix:
       compiler: clang
       env: 
         - COMPILER=clang++
-        - MATRIX_EVAL=""
+        - MATRIX_EVAL="clang++ -v"
+        - CXX_FLAGS="-v"
 
     # osx clang xcode9.2
     - os: osx
@@ -55,11 +59,11 @@ matrix:
       compiler: clang
       env: 
         - COMPILER=clang++
-        - MATRIX_EVAL=""
+        - MATRIX_EVAL="clang++ -v"
+        - CXX_FLAGS="-v"
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask uninstall oclint; fi # travis-ci issues #8826
-#  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get purge g++-4.8; fi # remove default gcc
   - eval "${MATRIX_EVAL}"
 
 # lets go
@@ -67,6 +71,6 @@ script:
   - $COMPILER --version
   - mkdir build
   - cd build 
-  - cmake .. -DCMAKE_CXX_COMPILER=$COMPILER
+  - cmake .. -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_CXX_FLAGS=$CXX_FLAGS
   - cmake --build .
   - ctest -V
