@@ -1,0 +1,3 @@
+MOCABE_NURBS_TEST(access)
+MOCABE_NURBS_TEST(dimension)
+MOCABE_NURBS_TEST(element_type)
