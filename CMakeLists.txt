@@ -40,7 +40,7 @@ if(MOCABE_NURBS_BUILD_TEST)
   add_subdirectory(external/Catch2)
 
   add_library(test-catch test/catch.cpp)
-  target_link_libraries(test-catch Catch2::Catch2)
+  target_link_libraries(test-catch PRIVATE Catch2::Catch2)
 endif()
 
 # ------------------------------------------
@@ -60,6 +60,7 @@ add_library(mocabe::nurbs ALIAS mocabe_nurbs)
 # ------------------------------------------
 function(MOCABE_NURBS_TEST NAME) 
   set(TARGET test-${NAME})
+  add_test(NAME ${TARGET} COMMAND ${TARGET})
   add_executable(${TARGET} ${NAME}.cpp)
   target_link_libraries(${TARGET} PRIVATE mocabe::nurbs)
   target_link_libraries(${TARGET} PRIVATE Catch2::Catch2)
