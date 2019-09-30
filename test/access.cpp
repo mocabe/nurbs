@@ -17,7 +17,7 @@ TEST_CASE("access")
   vec.y = 3.14;
 
   REQUIRE(get<0>(vec) == 42);
-  REQUIRE(get<1>(vec) == 3.14);
+  REQUIRE(get<1>(vec) == 3.14f);
 
   get<0>(vec) = 24;
   REQUIRE(get<0>(vec) == 24);
