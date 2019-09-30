@@ -6,6 +6,7 @@
 #pragma once
 
 #include "access.hpp"
+#include "tvec.hpp"
 
 #include <cassert>
 
@@ -14,22 +15,22 @@ namespace mocabe::nurbs {
   namespace detail {
 
     /// Convert to projective space
-    template <class VectorT, size_t Degree>
-    VectorT to_projective(const VectorT& affine)
+    template <class T, size_t N>
+    tvecN<T, N> affine_to_projective(const tvecN<T, N>& affine)
     {
-      auto w             = get<Degree - 1>(affine);
-      auto p             = affine * w;
-      get<Degree - 1>(P) = w;
+      auto v = affine;
+      auto w = get<Degree - 1>(affine);
+      rpred_s_assign<0, N - 1, std::multiplies<void>>(v, w);
       return p;
     }
 
     /// Convert to affine space
-    template <class VectorT, size_t Degree>
-    VectorT to_affine(const VectorT& projective)
+    template <class T, size_t N>
+    tvecN<T, N> projective_to_affine(const tvecN<T, N>& projective)
     {
-      auto w             = get<Degree - 1>(projective);
-      auto a             = projective / w;
-      get<Degree - 1>(a) = w;
+      auto v = projective;
+      auto w = get<Degree - 1>(projective);
+      rpred_s_assign<0, N - 1, std::divides<void>>(v, w);
       return a;
     }
 
